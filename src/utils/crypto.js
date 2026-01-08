@@ -1,4 +1,4 @@
-import { hash, compare } from "bcryptjs";
+import { hash,compare } from "bcrypt";
 class Crypto {
   async encrypt(data) {
     return await hash(data, 7);
