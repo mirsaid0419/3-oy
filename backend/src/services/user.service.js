@@ -28,7 +28,7 @@ class UserService {
 
     try {
       let { user_name, password } = req.body;
-      const { file } = req.files;
+      const  file  = req?.files?.file;
       const existUser = await pool.query(
         "select * from users where user_name=$1",
         [user_name]
@@ -52,7 +52,10 @@ class UserService {
         fileName = `${Date.now()}${extname(file.name)}`;
         
         await file.mv(
-          join(process.cwd(), "src", "uploads", "pictures", fileName)
+          join(process.cwd(), "src", "uploads", "pictures", fileName),
+          err=>{
+            if(err) throw err
+          }
         );
         
         newUser = await pool.query(
@@ -130,13 +133,6 @@ class UserService {
       throw error;
     }
   };
-  refresh = async (req) => {
-    try {
-      const authHeader = req.headers;
-      console.log(authHeader);
-    } catch (error) {
-      throw error;
-    }
-  };
+  
 }
 export default new UserService();

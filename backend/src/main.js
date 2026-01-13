@@ -11,10 +11,11 @@ import {
   ConfliktError,
   NotFoundError,
 } from "./utils/errors.js";
+import cors from "cors"
 import { join } from "path";
 
 const app = express();
-
+app.use(cors())
 app.use(express.json());
 app.use(fileUpload());
 app.use(cookieParser());

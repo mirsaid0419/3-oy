@@ -1,0 +1,82 @@
+Sun Jan 11 2026 16:28:10 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot read properties of undefined (reading 'length')
+Sun Jan 11 2026 16:29:11 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot read properties of undefined (reading 'length')
+Sun Jan 11 2026 16:30:05 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot read properties of undefined (reading 'length')
+Sun Jan 11 2026 16:33:04 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: data is not defined
+Sun Jan 11 2026 18:37:48 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: userValidate.files is not a function
+Sun Jan 11 2026 18:39:57 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: admin is not defined
+Sun Jan 11 2026 18:45:06 GMT+0500 (Uzbekistan Standard Time) 500 error: column "title" of relation "users" does not exist
+Sun Jan 11 2026 18:46:13 GMT+0500 (Uzbekistan Standard Time) 500 error: column "title" of relation "users" does not exist
+Mon Jan 12 2026 09:44:23 GMT+0500 (Uzbekistan Standard Time) 500 JsonWebTokenError: jwt must be provided
+Mon Jan 12 2026 09:45:15 GMT+0500 (Uzbekistan Standard Time) 500 JsonWebTokenError: jwt must be provided
+Mon Jan 12 2026 09:46:39 GMT+0500 (Uzbekistan Standard Time) 500 JsonWebTokenError: jwt must be provided
+Mon Jan 12 2026 09:47:45 GMT+0500 (Uzbekistan Standard Time) 500 JsonWebTokenError: jwt must be provided
+Mon Jan 12 2026 09:50:13 GMT+0500 (Uzbekistan Standard Time) 500 JsonWebTokenError: jwt must be provided
+Mon Jan 12 2026 09:50:34 GMT+0500 (Uzbekistan Standard Time) 500 JsonWebTokenError: jwt must be provided
+Mon Jan 12 2026 09:50:53 GMT+0500 (Uzbekistan Standard Time) 500 JsonWebTokenError: jwt must be provided
+Mon Jan 12 2026 14:27:02 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:28:21 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:29:50 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: user is not defined
+Mon Jan 12 2026 14:31:18 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot destructure property 'user' of 'req.user' as it is undefined.
+Mon Jan 12 2026 14:31:36 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot destructure property 'user' of 'req.user' as it is undefined.
+Mon Jan 12 2026 14:32:46 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:33:56 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:35:22 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:35:59 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:36:25 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:36:52 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:39:04 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:41:21 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:43:25 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: error is not defined
+Mon Jan 12 2026 14:44:28 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: us is not defined
+Mon Jan 12 2026 15:10:51 GMT+0500 (Uzbekistan Standard Time) 500 error: syntax error at or near "avatar"
+Mon Jan 12 2026 15:12:41 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot destructure property 'file' of 'req.files' as it is undefined.
+Mon Jan 12 2026 15:14:08 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot destructure property 'file' of '(intermediate value)' as it is undefined.
+Mon Jan 12 2026 15:24:46 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: us is not defined
+Mon Jan 12 2026 16:27:51 GMT+0500 (Uzbekistan Standard Time) 500 error: null value in column "file_name" of relation "files" violates not-null constraint
+Mon Jan 12 2026 16:30:07 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot read properties of undefined (reading 'rows')
+Mon Jan 12 2026 17:03:23 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot destructure property 'user' of 'req' as it is undefined.
+Mon Jan 12 2026 17:06:30 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot destructure property 'user' of 'req' as it is undefined.
+Mon Jan 12 2026 17:08:05 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot destructure property 'user' of 'req' as it is undefined.
+Mon Jan 12 2026 17:08:42 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot read properties of undefined (reading 'user')
+Mon Jan 12 2026 17:11:23 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot read properties of undefined (reading 'body')
+Mon Jan 12 2026 17:13:48 GMT+0500 (Uzbekistan Standard Time) 500 TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received undefined
+Mon Jan 12 2026 17:14:42 GMT+0500 (Uzbekistan Standard Time) 500 TypeError [ERR_INVALID_ARG_TYPE]: The "oldPath" argument must be of type string or an instance of Buffer or URL. Received undefined
+Mon Jan 12 2026 17:16:50 GMT+0500 (Uzbekistan Standard Time) 500 TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received undefined
+Mon Jan 12 2026 17:18:29 GMT+0500 (Uzbekistan Standard Time) 500 TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received undefined
+Mon Jan 12 2026 17:19:11 GMT+0500 (Uzbekistan Standard Time) 500 TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received undefined
+Mon Jan 12 2026 17:21:50 GMT+0500 (Uzbekistan Standard Time) 500 TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received type number (14)
+Mon Jan 12 2026 17:58:31 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: user_id is not defined
+Mon Jan 12 2026 18:14:59 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: req is not defined
+Mon Jan 12 2026 18:15:56 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: req is not defined
+Mon Jan 12 2026 18:16:25 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: req is not defined
+Mon Jan 12 2026 18:19:08 GMT+0500 (Uzbekistan Standard Time) 500 error: syntax error at or near ""%salom%""
+Mon Jan 12 2026 19:26:59 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: data is not defined
+Mon Jan 12 2026 19:30:03 GMT+0500 (Uzbekistan Standard Time) 500 error: syntax error at or near ""%salom%""
+Mon Jan 12 2026 19:44:42 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot convert object to primitive value
+Mon Jan 12 2026 19:44:49 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot convert object to primitive value
+Mon Jan 12 2026 20:14:33 GMT+0500 (Uzbekistan Standard Time) 500 Error: ENOENT: no such file or directory, unlink 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\uploads\videos\14_1768214909902_alik.mp4'
+Mon Jan 12 2026 20:15:35 GMT+0500 (Uzbekistan Standard Time) 500 Error: ENOENT: no such file or directory, unlink 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\uploads\videos\14_1768217466449_alik.mp4'
+Mon Jan 12 2026 20:56:51 GMT+0500 (Uzbekistan Standard Time) 500 ReferenceError: user_id is not defined
+Mon Jan 12 2026 20:59:25 GMT+0500 (Uzbekistan Standard Time) 500 Error: ENOENT: no such file or directory, rename 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\uploads\videos\14_1768222821163_shapaloq.mp4' -> 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\uploads\videos\14_1768233565820_jamalak.mp4'
+Mon Jan 12 2026 21:04:27 GMT+0500 (Uzbekistan Standard Time) 500 Error: ENOENT: no such file or directory, rename 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\uploads\videos\14_1768233565820_jamalak.mp4' -> 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\uploads\videos\14_1768233867142_jamalak.mp4'
+Mon Jan 12 2026 21:04:59 GMT+0500 (Uzbekistan Standard Time) 500 Error: ENOENT: no such file or directory, rename 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\uploads\videos\14_1768233867142_jamalak.mp4' -> 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\uploads\videos\14_1768233899127_jamalak.mp4'
+Mon Jan 12 2026 21:08:04 GMT+0500 (Uzbekistan Standard Time) 500 Error: ENOENT: no such file or directory, rename 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\uploads\videos\14_1768233899127_jamalak.mp4' -> 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\uploads\videos\14_1768234084967_jamalak.mp4'
+Mon Jan 12 2026 21:36:16 GMT+0500 (Uzbekistan Standard Time) 500 error: syntax error at or near ""%iiii%""
+Mon Jan 12 2026 22:09:47 GMT+0500 (Uzbekistan Standard Time) 500 error: syntax error at or near "$1"
+Mon Jan 12 2026 22:17:29 GMT+0500 (Uzbekistan Standard Time) 500 error: syntax error at or near ""$1""
+Mon Jan 12 2026 22:18:04 GMT+0500 (Uzbekistan Standard Time) 500 error: syntax error at or near "$1"
+Mon Jan 12 2026 22:30:33 GMT+0500 (Uzbekistan Standard Time) 500 error: syntax error at or near "{"
+Mon Jan 12 2026 22:38:52 GMT+0500 (Uzbekistan Standard Time) 500 error: syntax error at or near ":"
+Mon Jan 12 2026 22:40:07 GMT+0500 (Uzbekistan Standard Time) 500 error: cross-database references are not implemented: f.title.f.file_name
+Mon Jan 12 2026 22:41:48 GMT+0500 (Uzbekistan Standard Time) 500 error: syntax error at or near ","
+Mon Jan 12 2026 22:41:58 GMT+0500 (Uzbekistan Standard Time) 500 error: column u.name does not exist
+Mon Jan 12 2026 22:42:45 GMT+0500 (Uzbekistan Standard Time) 500 error: bind message supplies 1 parameters, but prepared statement "" requires 0
+Mon Jan 12 2026 22:51:56 GMT+0500 (Uzbekistan Standard Time) 500 error: invalid input syntax for type integer: "1.27"
+Mon Jan 12 2026 22:52:09 GMT+0500 (Uzbekistan Standard Time) 500 error: invalid input syntax for type integer: "1.27"
+Mon Jan 12 2026 22:54:33 GMT+0500 (Uzbekistan Standard Time) 500 error: invalid input syntax for type integer: "1.27"
+Mon Jan 12 2026 22:54:42 GMT+0500 (Uzbekistan Standard Time) 500 error: invalid input syntax for type integer: "1.27"
+Mon Jan 12 2026 22:55:37 GMT+0500 (Uzbekistan Standard Time) 500 error: invalid input syntax for type integer: "1.27"
+Mon Jan 12 2026 23:39:34 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: Cannot read properties of undefined (reading 'params')
+Mon Jan 12 2026 23:40:19 GMT+0500 (Uzbekistan Standard Time) 500 Error: ENOENT: no such file or directory, open 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\pictures\1_1768235543680_shikalad.mp4'
+Mon Jan 12 2026 23:43:18 GMT+0500 (Uzbekistan Standard Time) 500 Error: ENOENT: no such file or directory, open 'C:\Users\user\Desktop\n-26\3-oy\dars-3\you_tube\src\videos\1_1768235543680_shikalad.mp4'
+Mon Jan 12 2026 23:52:39 GMT+0500 (Uzbekistan Standard Time) 500 TypeError: path must be a string to res.sendFile

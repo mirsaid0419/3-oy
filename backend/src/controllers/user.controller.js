@@ -1,4 +1,5 @@
 import config from "../config/config.js";
+import pool from "../db/connect.js";
 import user from "../services/user.service.js";
 
 class UserController {
@@ -20,6 +21,7 @@ class UserController {
   logIn=async (req,res,next) => {
     try {
       const data = await user.logIn(req)
+      req.headers.accesToken=data.accesToken
       res.cookie(config.RESPONS_COOKIE_KEY, data.refreshToken, {
         httpOnly: true,
         secure: true,
@@ -35,7 +37,6 @@ class UserController {
   getAllUsers=async (req,res,next) => {
     try {
       const data = await user.getAllUsers(req);
-      console.log(data)
       if(!data.data.length){
         return res.status(data.status || 200).json({
           status:200,
@@ -48,8 +49,14 @@ class UserController {
     }
   
   }
-  refresh=async (req,res,next)=>{
-    await user.refresh(req)
+  
+  getOneUserVideos=async (req,res,next) => {
+    try {
+      await user.getOneUserVideos(req)
+      const data= await pool.query(`select * from files where user_id=$1`,[req.user_id])
+    } catch (error) {
+      next(error)
+    }
   }
 }
 export default new UserController();

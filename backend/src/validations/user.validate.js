@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { title } from "process";
 class UserValidate {
   constructor() {
     this.passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
@@ -17,12 +18,18 @@ class UserValidate {
     });
     return admin.validate(data);
   }
-  files(data){
-    const admin=Joi.object({
-      title:Joi.string().min(3).max(40).required(),
-      user_id:Joi.number().required().min(0)
-    })
-    return admin.validate(data)
+  files(data) {
+    const admin = Joi.object({
+      title: Joi.string().min(3).max(40).required(),
+      user_id: Joi.number().required().min(0),
+    });
+    return admin.validate(data);
+  }
+  fileUpdate(data) {
+    const admin = Joi.object({
+      title: Joi.string().required().min(3).max(40),
+    });
+    return admin.validate(data);
   }
 }
 export default new UserValidate();

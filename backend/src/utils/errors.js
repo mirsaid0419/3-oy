@@ -20,4 +20,16 @@ class ConfliktError extends Error {
     super(message), (this.status = 409);
   }
 }
-export { ValidationsError, ServerError, ConfliktError, NotFoundError };
+class TokensError extends Error{
+  constructor(message,status=401){
+    super(message),
+    this.status=status
+  }
+}
+class UnauthorizeError extends Error{
+  constructor(message,status=401){
+    super(message),
+    this.status=status
+  }
+}
+export { UnauthorizeError,ValidationsError, ServerError, ConfliktError, NotFoundError, TokensError };
