@@ -8,6 +8,8 @@ class UserValidate {
     const admin = Joi.object({
       user_name: Joi.string().required(),
       password: Joi.string().pattern(this.passwordRegex).required(),
+      // email:Joi.string().email().required(),
+      // otpInput:Joi.number().required()
     });
     return admin.validate(data);
   }
@@ -21,7 +23,6 @@ class UserValidate {
   files(data) {
     const admin = Joi.object({
       title: Joi.string().min(3).max(40).required(),
-      user_id: Joi.number().required().min(0),
     });
     return admin.validate(data);
   }

@@ -80,6 +80,7 @@ class UserService {
       return {
         status: 201,
         message: "succes",
+        avatar:fileName,
         accesToken,
         refreshToken,
       };
@@ -124,8 +125,9 @@ class UserService {
         expiresIn: config.TOKEN.REFRESH_TOKEN_TIME,
       });
       return {
-        status: 201,
+        status: 200,
         message: "succes",
+        avatar:rows[0].avatar,
         accesToken,
         refreshToken,
       };

@@ -5,7 +5,7 @@ import checkToken from "../middlewares/checkToken.js";
 const router = Router();
 
 router
-  .post("/save", userMiddleware.files, files.savedFile)
+  .post("/save", checkToken,userMiddleware.files, files.savedFile)
   .get("/", files.getAllVideos)
   .get("/files/:file_name",files.getVideo)
   .get("/files", checkToken, files.getOneUserVideos)

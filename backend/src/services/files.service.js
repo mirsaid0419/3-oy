@@ -1,21 +1,20 @@
 import pool from "../db/connect.js";
 import {
-  ConfliktError,
   NotFoundError,
   ValidationsError,
 } from "../utils/errors.js";
 import { extname, join } from "path";
-import config from "../config/config.js";
-import { readFileSync, renameSync, unlinkSync } from "fs";
+import {  renameSync, unlinkSync } from "fs";
 class FilesService {
   savedFile = async (req) => {
     let fileName;
     let existCreate;
     try {
-      const { user_id, title } = req.body;
+      const {  title } = req.body;
       const { file } = req.files;
+      const {id}=req.user
       const existUser = await pool.query("select id from users where id=$1", [
-        user_id,
+        id,
       ]);
       if (!existUser.rowCount) {
         throw new NotFoundError("user not found", 404);
@@ -33,10 +32,10 @@ class FilesService {
       }
       file.size = +(file.size / 1024 / 1024).toFixed(2);
       const safeTitle = title.replace(/\s+/g, "_");
-      fileName = `${user_id}_${Date.now()}_${safeTitle}${extname(file.name)}`;
+      fileName = `${id}_${Date.now()}_${safeTitle}${extname(file.name)}`;
       existCreate = await pool.query(
         `insert into files(title,file_name,size,user_id) values($1,$2,$3,$4) returning *`,
-        [title, fileName, file.size, user_id]
+        [title, fileName, file.size, id]
       );
 
       await file.mv(
@@ -61,9 +60,9 @@ class FilesService {
 
   getOneUserVideos = async (req) => {
     try {
-      const { user } = req;
+      const { id } = req.user;
       const data = await pool.query(`select * from files where user_id=$1`, [
-        user.id,
+        id,
       ]);
       if (!data.rowCount) {
         return {
@@ -86,12 +85,12 @@ class FilesService {
       let data;
       if (title) {
         data = await pool.query(
-          `select f.id, f.title,f.file_name,f.created_at,(f.size) as size, json_build_object('id',u.id,'name',u.user_name,'avatar',u.avatar) as user from files f join users u on f.user_id=u.id where title ilike $1`,
+          `select f.id, f.title,f.file_name,to_char(f.created_at, 'YYYY.MM.DD/HH24:MI') as created_at,(f.size) as size, json_build_object('id',u.id,'name',u.user_name,'avatar',u.avatar) as user from files f join users u on f.user_id=u.id where title ilike $1`,
           [`%${title}%`]
         );
       } else {
         data = await pool.query(
-          `select * from files join users on files.user_id=users.id`
+          `select f.id, f.title,f.file_name,to_char(f.created_at, 'YYYY.MM.DD/HH24:MI') as created_at,(f.size) as size, json_build_object('id',u.id,'name',u.user_name,'avatar',u.avatar) as user from files f join users u on f.user_id=u.id`
         );
       }
       if (!data.rowCount) {

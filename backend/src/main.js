@@ -5,12 +5,7 @@ import pool from "./db/connect.js";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { appendFileSync } from "fs";
-import {
-  ValidationsError,
-  ServerError,
-  ConfliktError,
-  NotFoundError,
-} from "./utils/errors.js";
+import nodemailer from "nodemailer";
 import cors from "cors"
 import { join } from "path";
 
@@ -22,33 +17,26 @@ app.use(cookieParser());
 
 app.use("/api", router);
 
+const transport = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "abduqulovmirsai0419@gmail.com",
+    pass: "bogo zdlh ecfg wjtr",
+  },
+});
+
+app.post("/send",async(req,res)=>{
+  const {email}=req.body
+  await transport.sendMail({
+    from: `'MIB' <abduqulovmirsai@gmail.com>`,
+    to: email,
+    subject: "tasdiqlash kodi",
+    html: `<h2>Jarima</h2>`,
+  });
+  return res.status(200).send("sms yuborildi")
+})
+
 app.use((err, req, res, next) => {
-  //   if (err instanceof ValidationsError) {
-  //     return res.status(err.status).json({
-  //       status: err?.status || 422,
-  //       message: err?.message || "Validation err",
-  //     });
-  //   } else if (err instanceof ServerError) {
-  //     return res.status(err.status).json({
-  //       status: err?.status || 500,
-  //       message: err?.message || "Internal server err",
-  //     });
-  //   } else if (err instanceof NotFoundError) {
-  //     return res.status(err.status).json({
-  //       status: err?.status || 404,
-  //       message: err?.message || "Not found err",
-  //     });
-  //   } else if (err instanceof ConfliktError) {
-  //     return res.status(err.status).json({
-  //       status: err?.status || 409,
-  //       message: err?.message || "Conflik err",
-  //     });
-  //   } else {
-  //     return res.status(500).json({
-  //       status: 500,
-  //       message: err.message,
-  //     });
-  //   }
   if (!err.status || err.status >= 500) {
     const data = `${Date()} ${500} ${err}\n`;
     appendFileSync(join(process.cwd(), "src", "logs", "loger.txt"), data);
