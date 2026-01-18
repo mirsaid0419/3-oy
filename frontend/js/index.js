@@ -77,7 +77,6 @@ async function avatarImg() {
 let search = "";
 async function voice() {
   const voic = new SpeechRecognition();
-  // voic.interimResults = false;
   voic.start();
   voic.lang = "uz-Uz";
 
@@ -91,7 +90,6 @@ lupa.addEventListener("click", async (e) => {
   e.preventDefault();
 
   search = inputSearch.value;
-  console.log(search)
   getAllFiles();
 });
 
@@ -103,6 +101,9 @@ list.addEventListener("click", () => {
     window.location = "/admin";
   }
 });
+
+
+
 avatarImg();
 getAllUsers();
 getAllFiles();

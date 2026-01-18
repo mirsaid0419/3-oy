@@ -196,8 +196,6 @@ class FilesService {
     } catch (error) {
       throw error;
     }
-    // console.log(file_id)
-    // console.log(id)
   };
   getVideo = async (req) => {
     try {

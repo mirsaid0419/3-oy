@@ -18,6 +18,7 @@ class UserController {
       next(error);
     }
   };
+  
   logIn=async (req,res,next) => {
     try {
       const data = await user.logIn(req)
@@ -34,6 +35,7 @@ class UserController {
       next(error)
     }
   }
+
   getAllUsers=async (req,res,next) => {
     try {
       const data = await user.getAllUsers(req);
@@ -53,7 +55,15 @@ class UserController {
   getOneUserVideos=async (req,res,next) => {
     try {
       await user.getOneUserVideos(req)
-      const data= await pool.query(`select * from files where user_id=$1`,[req.user_id])
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  sendOtp=async (req,res,next) => {
+    try {
+      const data=await user.otp(req)
+      return res.status(data.status || 200).json(data.message);
     } catch (error) {
       next(error)
     }

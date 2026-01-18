@@ -15,6 +15,12 @@
     <link rel="stylesheet" href="./css/material-design-iconic-font.min.css" />
   </head>
   <body>
+    <script>
+      const token = window.localStorage.getItem("accessToken");
+      if (token) {
+        window.location = "/admin";
+      }
+    </script>
     <div class="container">
       <div class="wrapper">
         <h1 class="title">Registration Page</h1>
@@ -29,7 +35,7 @@
               required
             />
           </label>
-          <!-- <label>
+          <label>
             <input
               type="email"
               id="emailInput"
@@ -45,7 +51,7 @@
               placeholder="Your sending email otp"
               required
             />
-          </label> -->
+          </label>
           <label>
             <span class="zmdi zmdi-lock"></span>
             <input
@@ -70,12 +76,28 @@
         <div style="margin-top: 20px">
           <a style="margin-right: 25px" href="/home" class="sign-link">home</a>
           <a href="/login" class="sign-link">I am already member</a>
+          <button id="openModal">📧 Email orqali yuborish</button>
         </div>
         <img
           src="img/signup-image.jpg"
           alt="signup-image"
           class="signup-image"
         />
+      </div>
+      <div class="modal" id="emailModal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>OTP yuborish</h2>
+
+          <input
+            type="email"
+            id="otpEmailInput"
+            placeholder="Emailingizni kiriting"
+            required
+          />
+
+          <button id="sendOtp">Jo‘natish</button>
+        </div>
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>

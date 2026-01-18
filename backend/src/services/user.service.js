@@ -1,7 +1,8 @@
 import pool from "../db/connect.js";
-import { appendFileSync, unlinkSync } from "fs";
+import { readFileSync, writeFileSync, unlinkSync } from "fs";
 import { testCript, hashed } from "../utils/brypt.js";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 import {
   ValidationsError,
   ServerError,
@@ -10,6 +11,14 @@ import {
 } from "../utils/errors.js";
 import { extname, join } from "path";
 import config from "../config/config.js";
+
+const transport = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "abduqulovMirsai0419@gmail.com",
+    pass: "bogo zdlh ecfg wjtr",
+  },
+});
 
 class UserService {
   getAllUsers = async () => {
@@ -22,20 +31,37 @@ class UserService {
       throw error;
     }
   };
+  
   registr = async (req) => {
     let newUser = null;
     let fileName = null;
 
     try {
-      let { user_name, password } = req.body;
-      const  file  = req?.files?.file;
+      let { user_name, password,email,otp } = req.body;
+
+      let otps = JSON.parse(
+        readFileSync(
+          join(process.cwd(), "src", "logs", "otp.json"),
+          "utf-8",
+          (err) => {
+            if (err) {
+              err.status = 500;
+              throw err;
+            }
+          }
+        )
+      );
+
+      const existOtp=otps.find(el=>el.email==email.trim() && el.otp==otp && el.expiredTime>=Date.now())
+      if(!existOtp) throw new NotFoundError("Otp kod hato yoki eskirgan")
+      const file = req?.files?.file;
       const existUser = await pool.query(
-        "select * from users where user_name=$1",
-        [user_name]
+        "select * from users where user_name=$1 or email=$2",
+        [user_name,email]
       );
 
       if (existUser.rowCount) {
-        throw new ConfliktError("User name allready exists");
+        throw new ConfliktError("User name or email allready exists");
       }
 
       password = await hashed(password);
@@ -50,22 +76,22 @@ class UserService {
         }
 
         fileName = `${Date.now()}${extname(file.name)}`;
-        
+
         await file.mv(
           join(process.cwd(), "src", "uploads", "pictures", fileName),
-          err=>{
-            if(err) throw err
+          (err) => {
+            if (err) throw err;
           }
         );
-        
+
         newUser = await pool.query(
-          "insert into users(user_name,password,avatar) values($1,$2,$3) returning id",
-          [user_name, password, fileName]
+          "insert into users(user_name,password,avatar,email) values($1,$2,$3,$4) returning id",
+          [user_name, password, fileName,email]
         );
       } else {
         newUser = await pool.query(
-          "insert into users(user_name,password) values($1,$2) returning id",
-          [user_name, password]
+          "insert into users(user_name,password,email) values($1,$2,$3) returning id",
+          [user_name, password,email]
         );
       }
 
@@ -80,7 +106,7 @@ class UserService {
       return {
         status: 201,
         message: "succes",
-        avatar:fileName,
+        avatar: fileName,
         accesToken,
         refreshToken,
       };
@@ -127,7 +153,7 @@ class UserService {
       return {
         status: 200,
         message: "succes",
-        avatar:rows[0].avatar,
+        avatar: rows[0].avatar,
         accesToken,
         refreshToken,
       };
@@ -135,6 +161,47 @@ class UserService {
       throw error;
     }
   };
-  
+
+  otp = async (req) => {
+    try {
+      const { email } = req.body;
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      let otps = JSON.parse(
+        readFileSync(
+          join(process.cwd(), "src", "logs", "otp.json"),
+          "utf-8",
+          (err) => {
+            if (err) {
+              err.status = 500;
+              throw err;
+            }
+          }
+        )
+      );
+
+      const expiredTime = Date.now() + 5 * 60 * 1000;
+      otps.push({ email, otp, expiredTime });
+      writeFileSync(
+        join(process.cwd(), "src", "logs", "otp.json"),
+        JSON.stringify(otps, null, 2),
+        (err) => {
+          if (err) {
+            throw err;
+          }
+        }
+      );
+      await transport.sendMail({
+        from: `'MIB' <abduqulovmirsai@gmail.com>`,
+        to: email,
+        subject: "tasdiqlash kodi",
+        html: `<h2>${otp}</h2>`,
+      });
+      return { status: 200, message: "Habar yuborildi" };
+      // return res.status(200).json({ status: 200, message: "Habar yuborildi" });
+    } catch (error) {
+      err.status = 500;
+      throw error;
+    }
+  };
 }
 export default new UserService();

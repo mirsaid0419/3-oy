@@ -7,6 +7,7 @@ const router=Router()
 router
   .post("/registr", userMiddleware.registr, user.registr)
   .post("/login", userMiddleware.logIn, user.logIn)
+  .post("/otp",user.sendOtp)
   .get("/users",user.getAllUsers)
   // .post("/refresh",user.refresh)
 

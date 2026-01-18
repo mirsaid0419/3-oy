@@ -2,7 +2,8 @@ CREATE TABLE "users"(
     "id" SERIAL PRIMARY KEY NOT NULL,
     "user_name" VARCHAR(255) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
-    "avatar" TEXT 
+    "avatar" TEXT,
+    "email" TEXT not NULL UNIQUE
 );
     -- "email" VARCHAR(255) not NULL UNIQUE,
 CREATE TABLE "files"(

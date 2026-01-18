@@ -8,8 +8,8 @@ class UserValidate {
     const admin = Joi.object({
       user_name: Joi.string().required(),
       password: Joi.string().pattern(this.passwordRegex).required(),
-      // email:Joi.string().email().required(),
-      // otpInput:Joi.number().required()
+      email:Joi.string().email().required(),
+      otp:Joi.number().required()
     });
     return admin.validate(data);
   }
