@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-    
-</body>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>Suhbatdosh: Online</header>
+
+    <section id="chat-messages"></section>
+
+    <footer>
+      <input type="text" id="msg-input" placeholder="Xabar yozing..." />
+      <button id="send-btn">Yuborish</button>
+    </footer>
+    <!-- <input id="smsInp" type="text" />
+    <button id="smsbtn" type="button">send</button>
+    <ul id="sms"></ul> -->
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="./server.js"></script>
+  </body>
 </html>

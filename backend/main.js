@@ -1,23 +1,23 @@
-import cors from "cors"
+import cors from "cors";
 import express from "express";
-import {createServer} from "http"
+import { createServer } from "http";
+import { join } from "path";
 import { Server } from "socket.io";
 
+const app = express();
+app.use(cors());
+const server = createServer(app);
 
-const app=express()
-app.use(cors())
-const server= createServer(app)
+const io = new Server(server, {
+  cors: { origin: "*" },
+});
 
-const io=new Server(server,{
-    cors:"*",
-    
-})
+app.use(express.static(join(process.cwd(), "css")));
 
-io.on("connection",socket=>{
-    socket.emit("salom","Assalomu aleykum boy ota")
-    socket.on("xabar",data=>{
-        socket.emit("javob","Vaaleykum assalom qoravoy")
-    })
-})
+io.on("connection", (socket) => {
+  socket.on("sms", (data) => {
+    socket.broadcast.emit("javob", data);
+  });
+});
 
-server.listen(5050,()=>console.log("backend server ishladi"))
+server.listen(3000, () => console.log("backend server ishladi"));
