@@ -301,45 +301,49 @@
             </li> -->
           </ul>
         </div>
-        
         <!-- CHAT PANEL -->
-        <div class="chat-wrapper">
-          <div class="chat-header">
-            <img
-              id="chatUserAvatar"
-              src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            />
-            <span id="chatUserName">Select user</span>
-          </div>
+        <div class="chat-sidebar" id="chatSidebar">
+          <button class="toggle-btn" onclick="toggleChat()">
+            <span id="arrowIcon">❯</span>
+          </button>
 
-          <!-- Chat messages -->
-          <div class="chat-body">
-            <div class="message other">Assalomu alaykum 👋</div>
+          <div class="chat-wrapper">
+            <div class="chat-header">
+              <img
+                id="chatUserAvatar"
+                src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+              />
+              <span id="chatUserName">Select user</span>
+            </div>
 
-            <div class="message me">Va alaykum salom</div>
+            <!-- Chat messages -->
+            <div class="chat-body">
+              <div class="message other">Assalomu alaykum 👋</div>
 
-            <div class="message other">Video juda zo‘r chiqibdi 🔥</div>
+              <div class="message me">Va alaykum salom</div>
+            </div>
 
-            <div class="message me">Rahmat, yana yuklayman</div>
+            <div class="chat-footer">
+              <label class="file-btn">
+                📹
+                <input id="inpFile" type="file" hidden />
+              </label>
 
-            <div class="message other">Qachon yangi dars chiqadi?</div>
-          </div>
-
-          <div class="chat-footer">
-            <label class="file-btn">
-              📹
-              <input type="file" hidden />
-            </label>
-
-            <input type="text" id="chatInput" placeholder="Type a message..." />
-
-            <button id="sendBtn">➤</button>
+              <input
+                type="text"
+                id="chatInput"
+                placeholder="Type a message..."
+              />
+              <!-- <img src="" alt="" /> -->
+              <!-- <video src=""></video> -->
+              <button type="button" id="sendBtn" onclick="send()">➤</button>
+            </div>
           </div>
         </div>
       </main>
     </div>
-    <!-- <script src="../js/request.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="/js/index.js"></script>
   </body>
 </html>

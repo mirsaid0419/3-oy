@@ -10,7 +10,7 @@ async function UploaVideo(e) {
 
   try {
     const NewData = await axios.post(
-      "http://localhost:2020/api/files/save",
+      "http://10.10.1.20:2020/api/files/save",
       data,
       { headers: { token: window.localStorage.getItem("accesToken") } }
     );
@@ -26,7 +26,7 @@ submitButton.onclick = UploaVideo;
 
 async function getAllUserVideos() {
   const token = window.localStorage.getItem("accesToken");
-  let getAllFiles = await axios.get("http://localhost:2020/api/files/files", {
+  let getAllFiles = await axios.get("http://10.10.1.20:2020/api/files/files", {
     headers: { token: token },
   });
   getAllFiles = getAllFiles.data.data;
@@ -35,11 +35,11 @@ async function getAllUserVideos() {
     videosList.innerHTML += `<li class="video-item">
                     <video 
                         controls 
-                        src="http://localhost:2020/api/files/files/${element.file_name}">
+                        src="http://10.10.1.20:2020/api/files/files/${element.file_name}">
                     </video>
                     <img 
                     class="delete-icon" 
-                    src ="http://localhost:2020/api/files/files/delete.png"
+                    src ="http://10.10.1.20:2020/api/files/files/delete.png"
                     width = "25"
                     onclick="deleteVideo(${element.id})">
                     
@@ -49,7 +49,7 @@ async function getAllUserVideos() {
 }
 async function deleteVideo(id) {
   try {
-    await axios.delete(`http://localhost:2020/api/files/files/${id}`, {
+    await axios.delete(`http://10.10.1.20:2020/api/files/files/${id}`, {
       headers: { token: window.localStorage.getItem("accesToken") },
     });
     location.reload();

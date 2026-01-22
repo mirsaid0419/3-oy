@@ -437,7 +437,7 @@ main.main {
     border-top: 1px solid #ddd; 
     display: flex; 
     align-items: center; 
-    padding: 8px; 
+    padding: 10px 12px 30px 12px;
     gap: 8px; 
 } 
  
@@ -461,4 +461,56 @@ main.main {
 .file-btn { 
     cursor: pointer; 
     font-size: 22px; 
+}
+
+
+
+
+/* Chat Sidebar asosi */
+.chat-sidebar {
+  position: fixed;
+  right: 0;
+  top: 10%; 
+  width: 320px; /* Chat kengligi */
+  height: 80vh; 
+  background: white;
+  box-shadow: -5px 0 15px rgba(0,0,0,0.1); /* Soya chapga */
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Yumshoqroq harakat */
+  z-index: 1000;
+  
+  /* TO'LIQ YASHIRISH: 100% dan biroz ko'proq bering, 
+     shunda soya ham ko'rinmaydi */
+  transform: translateX(calc(100% + 15px)); 
+}
+
+/* Chat ochiq holati */
+.chat-sidebar.active {
+  transform: translateX(0);
+}
+
+/* Strelka tugmasi */
+.toggle-btn {
+  position: absolute;
+  /* Tugma chatning chap chetiga yopishgan, lekin undan tashqarida tursin */
+  left: -40px; 
+  top: 20px; /* Tugmani sal yuqoriga qo'ydik */
+  width: 40px;
+  height: 50px;
+  background: #0084ff;
+  color: white;
+  border: none;
+  border-radius: 8px 0 0 8px; /* Faqat chap tomoni yumaloq */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  outline: none;
+}
+
+/* Chat konteyneri ichidagi ortiqcha bo'shliqlarni olib tashlash */
+.chat-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Ichidagi narsalar chetdan chiqib ketmasligi uchun */
 }

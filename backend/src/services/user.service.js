@@ -31,13 +31,13 @@ class UserService {
       throw error;
     }
   };
-  
+
   registr = async (req) => {
     let newUser = null;
     let fileName = null;
 
     try {
-      let { user_name, password,email,otp } = req.body;
+      let { user_name, password, email, otp } = req.body;
 
       let otps = JSON.parse(
         readFileSync(
@@ -52,12 +52,17 @@ class UserService {
         )
       );
 
-      const existOtp=otps.find(el=>el.email==email.trim() && el.otp==otp && el.expiredTime>=Date.now())
-      if(!existOtp) throw new NotFoundError("Otp kod hato yoki eskirgan")
+      const existOtp = otps.find(
+        (el) =>
+          el.email == email.trim() &&
+          el.otp == otp &&
+          el.expiredTime >= Date.now()
+      );
+      if (!existOtp) throw new NotFoundError("Otp kod hato yoki eskirgan");
       const file = req?.files?.file;
       const existUser = await pool.query(
         "select * from users where user_name=$1 or email=$2",
-        [user_name,email]
+        [user_name, email]
       );
 
       if (existUser.rowCount) {
@@ -86,12 +91,12 @@ class UserService {
 
         newUser = await pool.query(
           "insert into users(user_name,password,avatar,email) values($1,$2,$3,$4) returning id",
-          [user_name, password, fileName,email]
+          [user_name, password, fileName, email]
         );
       } else {
         newUser = await pool.query(
           "insert into users(user_name,password,email) values($1,$2,$3) returning id",
-          [user_name, password,email]
+          [user_name, password, email]
         );
       }
 
@@ -133,6 +138,7 @@ class UserService {
       throw error;
     }
   };
+  
   logIn = async (req) => {
     try {
       const { user_name, password } = req.body;
@@ -197,7 +203,6 @@ class UserService {
         html: `<h2>${otp}</h2>`,
       });
       return { status: 200, message: "Habar yuborildi" };
-      // return res.status(200).json({ status: 200, message: "Habar yuborildi" });
     } catch (error) {
       err.status = 500;
       throw error;

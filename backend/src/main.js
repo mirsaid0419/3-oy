@@ -5,9 +5,14 @@ import pool from "./db/connect.js";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import cors from "cors";
-import winston from "./utils/logger.js";
-
+import errorHendl from "./utils/errorHendl.js";
+import { Server } from "socket.io";
+import { createServer } from "http";
+import socket from "./routes/socket.routes.js";
 const app = express();
+const server = createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
+
 app.use(cors());
 app.use(express.json());
 app.use(fileUpload());
@@ -15,20 +20,8 @@ app.use(cookieParser());
 
 app.use("/api", router);
 
+socket(io);
 
+app.use(errorHendl);
 
-app.use((err, req, res, next) => {
-  if (!err.status || err.status >= 500) {
-    winston.error(err)
-    return res.status(500).json({
-      status: 500,
-      message: "internal server error",
-    });
-  }
-  return res.status(err.status).json({
-    status: err.status,
-    message: err.message || "internal server error",
-  });
-});
-
-app.listen(config.PORT, () => console.log("server running"));
+server.listen(config.PORT, () => console.log("server running"));

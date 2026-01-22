@@ -18,4 +18,5 @@ app.get("/admin",(req,res)=>{
     res.sendFile(join(process.cwd(), "html","admin.html"));
 })
 
+
 app.listen(5050,()=>console.log("front server ishladi"))

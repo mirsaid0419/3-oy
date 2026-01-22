@@ -9,7 +9,7 @@ async function registr(e) {
     data.append("file", uploadInput.files[0]);
 
     const newUser = await axios.post(
-      "http://localhost:2020/api/users/registr",
+      "http://10.10.1.20:2020/api/users/registr",
       data
     );
     if (newUser.data.status == 201) {
@@ -57,13 +57,11 @@ window.addEventListener("click", (event) => {
   }
 });
 
-// OTP yuborish tugmasi uchun (Logika qismi)
 sendOtpBtn.addEventListener("click", async () => {
   try {
     const email = otpEmailInput.value;
     if (email) {
-      const data = await axios.post("http://localhost:2020/api/users/otp", {email});
-      // console.log(data.status)
+      const data = await axios.post("http://10.10.1.20:2020/api/users/otp", {email});
       if (!(data.status == 200)) {
         throw new Error("Habar yuborishda hatoliok...");
       }
