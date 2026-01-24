@@ -1,45 +1,45 @@
-import user from "../service/user.service.js"
-class UserController {
-  createUser = async (req, res, next) => {
+import Group from "../service/groups.service.js"
+class GroupController {
+  createGroup = async (req, res, next) => {
     try {
-      const result = await user.create(req);
+      const result = await Group.create(req);
       res.status(result.status).json(result.message);
     } catch (error) {
       next(error);
     }
   };
 
-  getOneUser=async (req,res,next) => {
+  getOneGroup=async (req,res,next) => {
     try {
-        const result=await user.getOne(req)
+        const result=await Group.getOne(req)
         return res.status(200).json(result)
     } catch (error) {
         error.status=404
         next(error)
     }
   }
-  getAllUsers=async (req,res,next) => {
+  getAllGroup=async (req,res,next) => {
     try {
-      const result=await user.getAll()
+      const result=await Group.getAll()
       if(!result.data){
-        throw new Error("Users empty")
+        throw new Error("Groups empty")
       }
       return res.status(result.status).json(result.data)
     } catch (error) {
       next(error)
     }
   }
-  updateUser=async (req,res,next) => {
+  updateGroup=async (req,res,next) => {
     try {
-      const result = await user.update(req)
+      const result = await Group.update(req)
       return res.status(result.status).json(result.data)
     } catch (error) {
        next(error)
     }
   }
-  deleteUser=async (req,res,next) => {
+  deleteGroup=async (req,res,next) => {
     try {
-      const result = await user.delete(req)
+      const result = await Group.delete(req)
       return res.status(result.status).json(result.data)
     } catch (error) {
        next(error)
@@ -48,4 +48,4 @@ class UserController {
 }
 
 
-export default new UserController()
+export default new GroupController()

@@ -1,8 +1,8 @@
-import { User } from "../models/student.js";
-class UserService {
+import { Group } from "../models/student.js";
+class GroupService {
   create = async (req) => {
     try {
-      const result = await User.create(req.body);
+      const result = await Group.create(req.body);
       return { status: 201, message: "succes" };
     } catch (error) {
       throw error;
@@ -11,9 +11,9 @@ class UserService {
 
   getOne = async (req) => {
     try {
-      const result = await User.findById(req.params.id);
+      const result = await Group.findById(req.params.id);
       if (!result) {
-        throw new Error("User not found");
+        throw new Error("Group not found");
       }
       return { status: 200, data: result };
     } catch (error) {
@@ -23,7 +23,7 @@ class UserService {
   };
   getAll = async () => {
     try {
-      const data = await User.find();
+      const data = await Group.find();
       return { status: 200, data };
     } catch (error) {
       throw error;
@@ -31,11 +31,11 @@ class UserService {
   };
   update = async (req) => {
     try {
-      const result = await User.findByIdAndUpdate(req.params.id, req.body, {
+      const result = await Group.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
       });
       if (!result) {
-        throw new Error("User not found");
+        throw new Error("Group not found");
       }
       return { status: 200, data: result };
     } catch (error) {
@@ -45,11 +45,11 @@ class UserService {
   };
   delete = async (req) => {
     try {
-      const result = await User.findByIdAndDelete(req.params.id, req.body);
+      const result = await Group.findByIdAndDelete(req.params.id, req.body);
       if (!result) {
-        throw new Error("User not found");
+        throw new Error("Group not found");
       }
-      return { status: 200, data: "User succes deleted" };
+      return { status: 200, data: "Group succes deleted" };
     } catch (error) {
       error.status = 404;
       throw error;
@@ -57,4 +57,4 @@ class UserService {
   };
 }
 
-export default new UserService();
+export default new GroupService();

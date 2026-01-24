@@ -1,8 +1,8 @@
-import { User } from "../models/student.js";
-class UserService {
+import { Cours } from "../models/student.js";
+class CourseService {
   create = async (req) => {
     try {
-      const result = await User.create(req.body);
+      const result = await Cours.create(req.body);
       return { status: 201, message: "succes" };
     } catch (error) {
       throw error;
@@ -11,9 +11,9 @@ class UserService {
 
   getOne = async (req) => {
     try {
-      const result = await User.findById(req.params.id);
+      const result = await Cours.findById(req.params.id);
       if (!result) {
-        throw new Error("User not found");
+        throw new Error("Cours not found");
       }
       return { status: 200, data: result };
     } catch (error) {
@@ -23,7 +23,7 @@ class UserService {
   };
   getAll = async () => {
     try {
-      const data = await User.find();
+      const data = await Cours.find();
       return { status: 200, data };
     } catch (error) {
       throw error;
@@ -31,11 +31,11 @@ class UserService {
   };
   update = async (req) => {
     try {
-      const result = await User.findByIdAndUpdate(req.params.id, req.body, {
+      const result = await Cours.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
       });
       if (!result) {
-        throw new Error("User not found");
+        throw new Error("Cours not found");
       }
       return { status: 200, data: result };
     } catch (error) {
@@ -45,11 +45,12 @@ class UserService {
   };
   delete = async (req) => {
     try {
-      const result = await User.findByIdAndDelete(req.params.id, req.body);
+      const result = await Cours.findByIdAndDelete(req.params.id);
+      console.log(result)
       if (!result) {
-        throw new Error("User not found");
+        throw new Error("Cours not found");
       }
-      return { status: 200, data: "User succes deleted" };
+      return { status: 200, data: "Cours succes deleted" };
     } catch (error) {
       error.status = 404;
       throw error;
@@ -57,4 +58,4 @@ class UserService {
   };
 }
 
-export default new UserService();
+export default new CourseService();

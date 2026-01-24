@@ -1,45 +1,45 @@
-import user from "../service/user.service.js"
-class UserController {
-  createUser = async (req, res, next) => {
+import Cours from "../service/course.service.js";
+class CourseController {
+  createCourse = async (req, res, next) => {
     try {
-      const result = await user.create(req);
+      const result = await Cours.create(req);
       res.status(result.status).json(result.message);
     } catch (error) {
       next(error);
     }
   };
 
-  getOneUser=async (req,res,next) => {
+  getOneCourse=async (req,res,next) => {
     try {
-        const result=await user.getOne(req)
+        const result=await Cours.getOne(req)
         return res.status(200).json(result)
     } catch (error) {
         error.status=404
         next(error)
     }
   }
-  getAllUsers=async (req,res,next) => {
+  getAllCourse=async (req,res,next) => {
     try {
-      const result=await user.getAll()
+      const result=await Cours.getAll()
       if(!result.data){
-        throw new Error("Users empty")
+        throw new Error("Student empty")
       }
       return res.status(result.status).json(result.data)
     } catch (error) {
       next(error)
     }
   }
-  updateUser=async (req,res,next) => {
+  updateCourse=async (req,res,next) => {
     try {
-      const result = await user.update(req)
+      const result = await Cours.update(req)
       return res.status(result.status).json(result.data)
     } catch (error) {
        next(error)
     }
   }
-  deleteUser=async (req,res,next) => {
+  deleteCourse=async (req,res,next) => {
     try {
-      const result = await user.delete(req)
+      const result = await Cours.delete(req)
       return res.status(result.status).json(result.data)
     } catch (error) {
        next(error)
@@ -48,4 +48,4 @@ class UserController {
 }
 
 
-export default new UserController()
+export default new CourseController()
