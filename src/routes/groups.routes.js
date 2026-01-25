@@ -1,12 +1,13 @@
 import { Router } from "express";
-import Student from "../controllers/student.controller.js"
+import Group from "../controllers/groups.controller.js"
 const router=Router()
 
 router
-    .post("/create",Student.createStudent)
-    .get("/groups/:id",Student.getOneStudent)
-    .get("/groups",Student.getAllStudent)
-    .put("/group/:id",Student.updateStudent)
-    .delete("/group/:id",Student.deleteStudent)
+    .post("/create",Group.createGroup)
+    .get("/group/:id",Group.getOneGroup)
+    .get("/groups",Group.getAllGroup)
+    .put("/group/:id",Group.updateGroup)
+    .put("/addedstudent/:id",Group.addedStudent)
+    .delete("/group/:id",Group.deleteGroup)
 
 export default router

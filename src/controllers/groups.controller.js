@@ -3,7 +3,7 @@ class GroupController {
   createGroup = async (req, res, next) => {
     try {
       const result = await Group.create(req);
-      res.status(result.status).json(result.message);
+      res.status(result.status).json(result.data);
     } catch (error) {
       next(error);
     }
@@ -43,6 +43,14 @@ class GroupController {
       return res.status(result.status).json(result.data)
     } catch (error) {
        next(error)
+    }
+  }
+  addedStudent=async (req,res,next) => {
+    try {
+      const result=await Group.addedStudent(req)
+      return res.status(result.status).json(result)
+    } catch (error) {
+      next(error)
     }
   }
 }

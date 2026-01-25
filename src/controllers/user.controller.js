@@ -3,7 +3,7 @@ class UserController {
   createUser = async (req, res, next) => {
     try {
       const result = await user.create(req);
-      res.status(result.status).json(result.message);
+      res.status(result.status).json(result.data);
     } catch (error) {
       next(error);
     }

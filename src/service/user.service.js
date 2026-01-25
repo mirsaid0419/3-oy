@@ -3,7 +3,7 @@ class UserService {
   create = async (req) => {
     try {
       const result = await User.create(req.body);
-      return { status: 201, message: "succes" };
+      return { status: 201, data:result };
     } catch (error) {
       throw error;
     }

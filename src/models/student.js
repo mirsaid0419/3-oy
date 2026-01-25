@@ -2,6 +2,9 @@ import { Schema, model } from "mongoose";
 
 const UsersSchema = new Schema(
   {
+    fullName: { type: String, required: true },
+    age: { type: Number, min: 7, max: 100, required: true },
+    avatar: { type: String, default: "avatar.jpg" },
     email: {
       type: String,
       required: true,
@@ -20,13 +23,9 @@ const UsersSchema = new Schema(
 
     role: {
       type: String,
-      enum: ["ADMIN", "STUDENT", "TEACHER"],
-      default: "STUDENT",
+      enum: ["ADMIN", "STUDENT", "TEACHER", "USER", "SUPER_ADMIN"],
+      default: "USER",
     },
-
-    fullName: { type: String, required: true },
-    age: { type: Number, min: 7, max: 100, required: true },
-    avatar: { type: String, default: "avatar.jpg" },
   },
 
   {
@@ -36,7 +35,7 @@ const UsersSchema = new Schema(
 
 const StudentsSchema = new Schema(
   {
-    user_id: { type: Schema.Types.ObjectId, ref: "Users", required: true },
+    student_id: { type: Schema.Types.ObjectId, ref: "Users", required: true },
     phone: {
       type: String,
       match: /^(\+998|998|0)?[1-9][0-9]{8}$/,
@@ -63,8 +62,8 @@ const CoursesSchema = new Schema(
 
 const GroupsSchema = new Schema(
   {
-    name: { type: String, required: true },
-    course_id: { type: Schema.Types.ObjectId, required: true },
+    name: { type: String, required: true, unique: true },
+    course_id: { type: Schema.Types.ObjectId, ref: "Course", required: true },
     students: [{ type: Schema.Types.ObjectId, ref: "Users" }],
     start_date: { type: Date, default: Date.now() },
     end_date: { type: Date },
