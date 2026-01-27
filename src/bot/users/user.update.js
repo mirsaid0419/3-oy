@@ -6,3 +6,4 @@
 //   ctx.reply("assalomu aleykum " + name + " aka");
 // });
 
+// bot.launch();
