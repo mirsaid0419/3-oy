@@ -4,79 +4,135 @@ import { User } from "../../models/user.model.js";
 import { regionKeyboard } from "../keyboards/userkeyboars.js";
 import { checkSubscription } from "../subscription/subscription.js";
 
+const subKeyboard = Markup.inlineKeyboard([
+  [Markup.button.url("Kanalga a'zo bo'lish ✅", "https://t.me/n26_bots")],
+  [Markup.button.callback("Tekshirish 🔄️", "chesk_sub")],
+]);
+
+const regionButtons = Markup.inlineKeyboard([
+  [Markup.button.callback("Sirdaryo", "sirdaryo")],
+  [Markup.button.callback("Toshkent", "toshkent")],
+]);
+
 bot.start(async (ctx) => {
   const id = ctx.from.id;
-  const subscription = await checkSubscription(ctx, id);
-  if (subscription) {
-    ctx.reply(Markup.inlineKeyboard([[{}]]));
+  const sub = await checkSubscription(ctx, id);
+
+  if (sub === "left") {
+    return ctx.reply(
+      "Botdan foydalanish uchun quyidagi kanallarga a'zo bo'ling:",
+      subKeyboard
+    );
   }
-  const existUser = await User.findOne({ chat_id: id });
-  if (!existUser || existUser.step == "name") {
-    await User.create({ chat_id: id });
+
+  let existUser = await User.findOne({ chat_id: id });
+
+  if (!existUser) {
+    await User.create({ chat_id: id, step: "name" });
+    return ctx.reply("Assalomu aleykum! Ismingizni kiriting:");
   }
+
   switch (existUser.step) {
     case "name":
-      await User.updateOne({ chat_id: existUser.chat_id }, { step: "contact" });
-      ctx.reply(`assalomu aleykum \n\n Isminggizni kiriting: `);
+      ctx.reply("Ismingizni kiriting:");
       break;
     case "contact":
-      await User.updateOne({ chat_id: existUser.chat_id }, { step: "region" });
       ctx.reply(
-        `Viloyatinggizni tanlang: `,
+        "Telefon raqamingizni ulashing:",
         Markup.keyboard([
-          [
-            { text: "Telefon raqamni ulashish!", request_contact: true },
-            { text: "Joylashuvni ulashish!", request_location: true },
-          ],
+          [Markup.button.contactRequest("Telefon raqamni ulashish!")],
         ])
+          .resize()
+          .oneTime()
       );
-    case "region":
-
-      await User.updateOne({ chat_id: existUser.chat_id }, { step: "menu" });
-      ctx.reply(`Menyudan vazivalarni tanlang`,
-
-      )
-
       break;
-    default:
+    case "region":
+      ctx.reply("Viloyatingizni tanlang:", regionButtons);
+      break;
+    case "menu":
+      ctx.reply(
+        "Menyudan vazifani tanlang",
+        Markup.keyboard([
+          ["Musiqa izlash 🎵", "Video izlash 🎬"],
+        ])
+          .resize()
+          .oneTime()
+      );
       break;
   }
-  // console.log(id)
-  const exist_step = await User.findOne({});
 });
-bot.on("text", (ctx) => {
-  
-  const name = ctx.message.text;
-  if (name) {
-    ctx.reply(
-      `Raxmat ${name}!\n\nTelefon raqaminggizni kiriting`,
+
+bot.action("chesk_sub", async (ctx) => {
+  const id = ctx.from.id;
+  const sub = await checkSubscription(ctx, id);
+
+  if (sub === "left") {
+    await ctx.answerCbQuery("Siz hali a'zo emassiz!", { show_alert: true });
+    return;
+  }
+
+  await ctx.answerCbQuery("Obuna tasdiqlandi!");
+  await ctx.deleteMessage();
+
+  let existUser = await User.findOne({ chat_id: id });
+  if (!existUser) {
+    await User.create({ chat_id: id, step: "name" });
+  }
+  ctx.reply("Xush kelibsiz! Ismingizni kiriting:");
+});
+
+bot.on("text", async (ctx) => {
+  const id = ctx.from.id;
+  const text = ctx.message.text;
+  const user = await User.findOne({ chat_id: id });
+
+  if (!user) return;
+
+  if (user.step === "name") {
+    await User.findOneAndUpdate(
+      { chat_id: id },
+      { name: text, step: "contact" }
+    );
+    return ctx.reply(
+      `Raxmat ${text}! \nTelefon raqamingizni ulashing:`,
       Markup.keyboard([
-        [
-          { text: "Telefon raqamni ulashish!", request_contact: true },
-          { text: "Joylashuvni ulashish!", request_location: true },
-        ],
+        [Markup.button.contactRequest("Telefon raqamni ulashish!")],
       ])
         .resize()
         .oneTime()
     );
   }
+
+  if (user.step === "menu" && text === "Musiqa izlash 🎵") {
+    return ctx.reply("Qaysi musiqani izlaymiz?");
+  }
 });
 
-bot.on("contact", (ctx) => {
+bot.on("contact", async (ctx) => {
+  const id = ctx.from.id;
   const phone = ctx.message.contact.phone_number;
-  ctx.reply(`Viloyatinggizni tanlang: `, Markup.inlineKeyboard(regionKeyboard));
+
+  await User.findOneAndUpdate(
+    { chat_id: id },
+    { contact: phone, step: "region" }
+  );
+  ctx.reply("Viloyatingizni tanlang:", regionButtons);
 });
 
-bot.action("sirdaryo", (ctx) => {
-  const viloyat = ctx.update.callback_query.data;
-  // ctx.reply("Joylashu")
-  ctx.answerCbQuery("Viloyatinggiz muvofaqiyatli saqlandi!");
-});
-bot.on("location", (ctx) => {
-  // Markup.button.locationRequest()
-  const { latitude, longitude } = ctx.message.location;
+bot.action(["sirdaryo", "toshkent"], async (ctx) => {
+  const id = ctx.from.id;
+  const region = ctx.match[0];
+
+  await User.findOneAndUpdate(
+    { chat_id: id },
+    { region: region, step: "menu" }
+  );
+  await ctx.answerCbQuery(`${region} saqlandi!`);
+  await ctx.editMessageText("Ro'yxatdan o'tish yakunlandi!");
+
   ctx.reply(
-    `Rahmat! Sizning koordinatalaringiz: \nKenglik: ${latitude}\nUzunlik: ${longitude}`
+    "Menyudan vazifani tanlang",
+    Markup.keyboard([["Musiqa izlash 🎵"]]).resize()
   );
 });
 
