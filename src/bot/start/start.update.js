@@ -3,6 +3,7 @@ import { bot } from "../bot.js";
 import { User } from "../../models/user.model.js";
 import { regionKeyboard } from "../keyboards/userkeyboars.js";
 import { checkSubscription } from "../subscription/subscription.js";
+import { downloadAndSendVideo } from "../videoDownload.js";
 
 const subKeyboard = Markup.inlineKeyboard([
   [Markup.button.url("Kanalga a'zo bo'lish ✅", "https://t.me/n26_bots")],
@@ -26,7 +27,7 @@ bot.start(async (ctx) => {
   }
 
   let existUser = await User.findOne({ chat_id: id });
-
+  console.log(existUser)
   if (!existUser) {
     await User.create({ chat_id: id, step: "name" });
     return ctx.reply("Assalomu aleykum! Ismingizni kiriting:");
@@ -52,13 +53,25 @@ bot.start(async (ctx) => {
     case "menu":
       ctx.reply(
         "Menyudan vazifani tanlang",
-        Markup.keyboard([
-          ["Musiqa izlash 🎵", "Video izlash 🎬"],
-        ])
+        Markup.keyboard([["Musiqa izlash 🎵", "Video izlash 🎥"]])
           .resize()
           .oneTime()
       );
       break;
+
+    // case "menu":
+    //   if (text === "Video izlash 🎥") {
+    //     await User.findOneAndUpdate(
+    //       { chat_id: id },
+    //       { step: "wait_video_link" }
+    //     );
+    //     return ctx.reply(
+    //       "Menga video havolasini (linkini) yuboring, men uni sizga yuklab beraman."
+    //     );
+    //   }
+    //   break;
+
+
   }
 });
 
@@ -85,8 +98,25 @@ bot.on("text", async (ctx) => {
   const id = ctx.from.id;
   const text = ctx.message.text;
   const user = await User.findOne({ chat_id: id });
-
   if (!user) return;
+  if (user.step === "wait_video_link") {
+
+    const urlRegex =
+      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|instagram\.com|tiktok\.com)\/.+$/;
+
+    if (urlRegex.test(text)) {
+      ctx.reply("Video tahlil qilinmoqda, iltimos kuting... ⏳");
+
+      await User.findOneAndUpdate(
+        { chat_id: id },
+        { step: "wait_video" }
+      );
+      return await downloadAndSendVideo(ctx, text);
+    } else {
+      return ctx.reply("Iltimos, haqiqiy video havolasini yuboring!");
+    }
+  }
+
 
   if (user.step === "name") {
     await User.findOneAndUpdate(
@@ -105,6 +135,12 @@ bot.on("text", async (ctx) => {
 
   if (user.step === "menu" && text === "Musiqa izlash 🎵") {
     return ctx.reply("Qaysi musiqani izlaymiz?");
+  }else if(user.step === "menu" && text === "Video izlash 🎥"){
+    await User.findOneAndUpdate(
+      { chat_id: id },
+      { step: "wait_video_link" }
+    );
+    return ctx.reply("Video url ni kiriting!");
   }
 });
 
@@ -132,7 +168,7 @@ bot.action(["sirdaryo", "toshkent"], async (ctx) => {
 
   ctx.reply(
     "Menyudan vazifani tanlang",
-    Markup.keyboard([["Musiqa izlash 🎵"]]).resize()
+    Markup.keyboard([["Musiqa izlash 🎵"], ["Video izlash 🎥"]]).resize()
   );
 });
 
