@@ -1,0 +1,7 @@
+2026-01-30 19:03:21 [error]: Cannot destructure property 'name' of 'req.body' as it is undefined. | Location: at BranchService.create (file:///C:/Users/user/Desktop/full-stek%203-oy/imtixon-3/src/services/branch.service.js:6:15)
+2026-01-31 09:59:46 [error]: id is not defined | Location: at BranchService.getById (file:///C:/Users/user/Desktop/full-stek%203-oy/imtixon-3/src/services/branch.service.js:27:44)
+2026-01-31 09:59:53 [error]: id is not defined | Location: at BranchService.getById (file:///C:/Users/user/Desktop/full-stek%203-oy/imtixon-3/src/services/branch.service.js:27:44)
+2026-01-31 10:08:59 [error]: E11000 duplicate key error collection: car_market.staffs index: name_1 dup key: { name: null } | Location: at InsertOneOperation.handleOk (C:\Users\user\Desktop\full-stek 3-oy\imtixon-3\node_modules\mongodb\lib\operations\insert.js:51:19)
+2026-01-31 12:27:07 [error]: role is not defined | Location: at StaffService.logIn (file:///C:/Users/user/Desktop/full-stek%203-oy/imtixon-3/src/services/staff.service.js:119:56)
+2026-01-31 12:28:18 [error]: role is not defined | Location: at StaffService.logIn (file:///C:/Users/user/Desktop/full-stek%203-oy/imtixon-3/src/services/staff.service.js:119:63)
+2026-01-31 16:15:41 [error]: Cannot read properties of undefined (reading 'status') | Location: at getAll (file:///C:/Users/user/Desktop/full-stek%203-oy/imtixon-3/src/controllers/permission.controller.js:6:38)
