@@ -16,7 +16,7 @@ class PermissionService {
         throw new BadRequest("Noto'g'ri action");
       }
       const result = await Permision.findOneAndUpdate(
-        { staff_id:id, permissionsModel:permissionModel },
+        { staff_id: id, permissionsModel: permissionModel },
         { $set: { [`actions.${action}`]: true } },
         { new: true, upsert: true }
       );
@@ -28,17 +28,13 @@ class PermissionService {
   delete = async (req) => {
     try {
       const allowedActions = ["create", "read", "update", "delete"];
-      const { staff_id, permissionModel, action } = req.body;
-
+      const { permissionModel, action } = req.body;
+      const { id } = req.params;
       if (!allowedActions.includes(action)) {
         throw new BadRequest("Noto'g'ri action");
       }
-      const { error } = permissionValidate.delete(req.body);
-      if (error) {
-        throw new ValidationsError("Malumotlar xato kiritilgan");
-      }
       const result = await Permision.findOneAndUpdate(
-        { staff_id, permissionModel },
+        { staff_id: id, permissionsModel: permissionModel },
         { $set: { [`actions.${action}`]: false } },
         { new: true, upsert: true }
       );
