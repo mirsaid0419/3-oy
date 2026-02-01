@@ -4,43 +4,51 @@ class StaffController {
   createStaff = async (req, res, next) => {
     try {
       const result = await Staff.create(req);
-      return res.status(result.status).json(result)
+      return res.status(result.status).json(result);
     } catch (error) {
       next(error);
     }
   };
   updateStaff = async (req, res, next) => {
     try {
-      const result = await branchService.update(req);
+      const result = await Staff.update(req);
       return res.status(result.status).json(result);
     } catch (error) {
       next(error);
     }
   };
-  getAll=async (req,res,next) => {
+  updateAdminStaff = async (req, res, next) => {
     try {
-      const result = await Staff.getAll()
-      return res.status(result.status).json(result) 
+      const result = await Staff.updateAdmin(req);
+      return res.status(result.status).json(result);
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
-  getById=async (req,res,next) => {
+  };
+  getAll = async (req, res, next) => {
     try {
-      const result =await Staff.getById(req)
-      return res.status(result.status).json(result)
+      const result = await Staff.getAll();
+      return res.status(result.status).json(result);
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
-  delete=async (req,res,next) => {
+  };
+  getById = async (req, res, next) => {
     try {
-      const result  = await Staff.delete(req)
-      return res.status(result.status).json(result)
+      const result = await Staff.getById(req);
+      return res.status(result.status).json(result);
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
+  };
+  delete = async (req, res, next) => {
+    try {
+      const result = await Staff.delete(req);
+      return res.status(result.status).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
   sendOtp = async (req, res, next) => {
     try {
       const data = await Staff.otp(req);

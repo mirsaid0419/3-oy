@@ -1,5 +1,5 @@
 import { Branch } from "../models/models.js";
-import { ConfliktError } from "../utils/errors.js";
+import { ConfliktError, NotFoundError } from "../utils/errors.js";
 
 class BranchService {
   create = async (req) => {
@@ -25,7 +25,11 @@ class BranchService {
   getById = async (req) => {
     try {
       const {id}=req.params
+
       const result = await Branch.findById(id);
+      if(!result){
+        throw new NotFoundError("Branch not found")
+      }
       return { status: 200, data: result };
     } catch (error) {
       throw error;

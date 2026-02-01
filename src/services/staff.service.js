@@ -1,8 +1,9 @@
 import { Permision, Staff } from "../models/models.js";
 import { cript, testCript } from "../utils/brypt.js";
 import nodemailer from "nodemailer";
-import { BadRequest, ConfliktError, NotFoundError } from "../utils/errors.js";
+import { BadRequest, ConfliktError, NotFoundError, ValidationsError } from "../utils/errors.js";
 import { hashed } from "../utils/tokens.js";
+import Validate from "../validations/staffValidate.js"
 const transport = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -78,9 +79,13 @@ class StaffService {
   };
   update = async (req) => {
     try {
-      const { id } = req.params;
+      const { id } = req.user;
       if (!id) {
         throw new BadRequest("Id mavjud emas");
+      }
+      const {error}=Validate.update(req.body)
+      if(error){
+        throw new ValidationsError("Sizda bu malumotni yangilash huquqi yo'q")
       }
       const result = await Staff.findByIdAndUpdate(id, req.body);
       if (!result) {
@@ -91,6 +96,25 @@ class StaffService {
       throw error;
     }
   };
+  updateAdmin=async (req) => {
+    try {
+      const {id}=req?.params
+      if (!id) {
+        throw new BadRequest("Id mavjud emas");
+      }
+      const { error } = Validate.updateAdmin(req.body);
+      if (error) {
+        throw new ValidationsError("Sizda bu malumotni yangilash huquqi yo'q");
+      }
+      const result = await Staff.findByIdAndUpdate(id, req.body,{new:true});
+      if (!result) {
+        throw new NotFoundError("Staff not found");
+      }
+      return { status: 200, data: result };
+    } catch (error) {
+      throw error
+    }
+  }
   delete = async (req) => {
     try {
       const { id } = req.params;
@@ -101,6 +125,7 @@ class StaffService {
       if (!result) {
         throw new NotFoundError("Staff not found");
       }
+      await Permision.deleteMany({staff_id:id})
       return { status: 200, data: "Staff success deleted" };
     } catch (error) {
       throw error;
@@ -110,7 +135,6 @@ class StaffService {
     try {
       const { user_name, password } = req.body;
       const result = await Staff.findOne({ user_name });
-      console.log(result)
       if (!result) {
         throw new BadRequest("User name or password error");
       }

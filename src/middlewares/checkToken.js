@@ -8,10 +8,11 @@ import { openHash } from "../utils/tokens.js";
 
 export default async (req, res, next) => {
   try {
-    let token = req.headers.authorization.split("Bearer ")[1];
+    let token=req?.headers?.authorization
     if (!token) {
       throw new BadRequest("Token not found");
     }
+    token = req.headers.authorization.split("Bearer ")[1];
     token = await openHash(token);
     const existUser = await Staff.findById(token.id);
     if (!existUser) throw new NotFoundError("user not found");

@@ -8,7 +8,7 @@ async function hashed(data) {
 }
 
 async function openHash(data) {
-  return verify(data);
+  return verify(data,config.JWT_SECRET_KEY);
 }
 
 export { hashed, openHash };

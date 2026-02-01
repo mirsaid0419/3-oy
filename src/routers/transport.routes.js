@@ -16,14 +16,14 @@ export default router
   .get(
     "/get/:id",
     checkToken,
-    roleGuard("SuperAdmin", "Admin"),
+    roleGuard("SuperAdmin", "Admin", "Staff"),
     permissionGuard("Transports", "read"),
     Transport.getById
   )
   .get(
     "/all",
     checkToken,
-    roleGuard("SuperAdmin", "Admin"),
+    roleGuard("SuperAdmin", "Admin", "Staff"),
     permissionGuard("Transports", "read"),
     Transport.getAll
   )

@@ -3,6 +3,7 @@ import Staff from "../controllers/staff.controller.js";
 import checkToken from "../middlewares/checkToken.js";
 import roleGuard from "../guards/role.guard.js";
 import permissionGuard from "../guards/permission.guard.js";
+import { checkById } from "../middlewares/checkById.js";
 const router = Router();
 
 router
@@ -13,22 +14,30 @@ router
     "/get/:id",
     checkToken,
     roleGuard("SuperAdmin", "Admin", "Staff"),
-    permissionGuard("Staff"),
+    checkById("Staffs"),
     Staff.getById
   )
-  .get("/all", checkToken, roleGuard("SuperAdmin", "Admin"), Staff.getAll)
+  .get(
+    "/all",
+    checkToken,
+    roleGuard("SuperAdmin"),
+    permissionGuard("Staffs", "read"),
+    Staff.getAll
+  )
   .put(
     "/put/admin/:id",
     checkToken,
     roleGuard("SuperAdmin", "Admin"),
-    Staff.updateStaff
+    permissionGuard("Staffs","update"),
+    Staff.updateAdminStaff
   )
-  .put("/put",checkToken,Staff.updateStaff)
+  .put("/put", checkToken ,Staff.updateStaff)
   .delete(
     "/delete/:id",
     checkToken,
     roleGuard("SuperAdmin", "Admin"),
+    permissionGuard("Staffs", "delete"),
     Staff.delete
   );
 
-  export default router
+export default router;

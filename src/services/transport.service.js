@@ -1,15 +1,31 @@
 import { Transport } from "../models/models.js";
 import { BadRequest, NotFoundError } from "../utils/errors.js";
-
+import { join, extname } from "path";
 class TransportService {
   create = async (req) => {
+    let fileName = null;
     try {
-      const { branch, model, color, image, price } = req.body;
+      const { branch, model, color, price } = req.body;
+      const { file } = req.files;
+      // console.log(file)
+      if (!file) {
+        throw new BadRequest("Image is required");
+      }
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedTypes.includes(file.mimetype)) {
+        throw new ValidationsError(
+          "Faqat rasm yuklash ruxsat etilgan (jpg, png, webp)!"
+        );
+      }
+      fileName = `${Date.now()}${extname(file.name)}`;
+      await file.mv(join(process.cwd(), "src", "uploads", fileName), (err) => {
+        if (err) throw err;
+      });
       const result = await Transport.create({
         branch,
         model,
         color,
-        image,
+        image: fileName,
         price,
       });
       return { status: 201, data: result };
@@ -27,6 +43,7 @@ class TransportService {
   };
   getById = async (req) => {
     try {
+      const {id}=req.params
       const result = await Transport.findById(id);
       if (!result) {
         throw new NotFoundError("Transport not found");
@@ -38,7 +55,8 @@ class TransportService {
   };
   delete = async (req) => {
     try {
-      const result = await Transport.findById(id);
+      const {id}=req.params
+      const result = await Transport.findByIdAndDelete(id);
       if (!result) {
         throw new NotFoundError("Transport not found");
       }
@@ -63,4 +81,4 @@ class TransportService {
   };
 }
 
-export default new TransportService()
+export default new TransportService();
