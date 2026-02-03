@@ -6,13 +6,13 @@ const search_btn_hover_after = document.querySelector(
 );
 
 async function getAllUsers() {
-  let allUser = await axios.get("http://10.10.1.20:2020/api/users/users");
+  let allUser = await axios.get("https://three-oy.onrender.com/api/users/users");
   allUser = allUser.data.data;
   for (const element of allUser) {
     navbarList.innerHTML += `<li onclick='chat(${element.id},"${element.user_name}","${element.avatar}"); toggleChat()' class="channel" data-id="${element.id} ">
     <a>
     <img
-    src="http://10.10.1.20:2020/api/files/files/${element.avatar}"
+    src="https://three-oy.onrender.com/api/files/files/${element.avatar}"
     alt="channel-icon"
     width="30px"
     height="30px"
@@ -26,18 +26,18 @@ async function getAllFiles() {
   // inputSearch.value=search;
   iframesList.innerHTML = "";
   let getAllFiles = await axios.get(
-    `http://10.10.1.20:2020/api/files/?title=${search}`
+    `https://three-oy.onrender.com/api/files/?title=${search}`
   );
   getAllFiles = getAllFiles.data.data;
   for (const element of getAllFiles) {
     iframesList.innerHTML += `<li class="iframe">
               <video
-                src="http://10.10.1.20:2020/api/files/files/${element.file_name}"
+                src="https://three-oy.onrender.com/api/files/files/${element.file_name}"
                 controls=""
               ></video>
               <div class="iframe-footer">
                 <img
-                  src="http://10.10.1.20:2020/api/files/files/${element.user.avatar}"
+                  src="https://three-oy.onrender.com/api/files/files/${element.user.avatar}"
                   alt="channel-icon"
                 />
                 <div class="iframe-footer-text">
@@ -56,7 +56,7 @@ async function getAllFiles() {
 async function avatarImg() {
   const avatar = window.localStorage.getItem("avatar");
   if (avatar) {
-    const path = `http://10.10.1.20:2020/api/files/files/${avatar}`;
+    const path = `https://three-oy.onrender.com/api/files/files/${avatar}`;
     list.innerHTML += `<img
               class="avatar-img"
               src=${path}
@@ -107,7 +107,7 @@ const chatHeader = document.querySelector(".chat-header");
 const chatBody = document.querySelector(".chat-body");
 const chatInput = document.querySelector("#chatInput");
 const inpFile = document.querySelector("#inpFile");
-const server = io("http://10.10.1.20:2020/chat", {
+const server = io("https://three-oy.onrender.com/chat", {
   auth: { token: localStorage.getItem("accesToken") },
 });
 server.on("connect", () => {
@@ -126,7 +126,7 @@ async function send() {
       formFile.append("file_name", file_name);
       formFile.append("message", text);
       const { data } = await axios.post(
-        `http://10.10.1.20:2020/api/messages/create/${window.to_id}`,
+        `https://three-oy.onrender.com/api/messages/create/${window.to_id}`,
         formFile,
         {
           headers: { token: localStorage.getItem("accesToken") },
@@ -140,8 +140,8 @@ async function send() {
           file_type: file.type,
         });
         let media = file.type.startsWith("image")
-          ? `<img src="http://10.10.1.20:2020/api/files/files/${file_name}" style="max-width:200px; border-radius: 8px; display: block;" alt="">`
-          : `<video src="http://10.10.1.20:2020/api/files/files/${file_name}" controls style="max-width:200px; border-radius: 8px; display: block;"></video>`;
+          ? `<img src="https://three-oy.onrender.com/api/files/files/${file_name}" style="max-width:200px; border-radius: 8px; display: block;" alt="">`
+          : `<video src="https://three-oy.onrender.com/api/files/files/${file_name}" controls style="max-width:200px; border-radius: 8px; display: block;"></video>`;
         chatBody.innerHTML += `
           <div class="message me">
             ${media}
@@ -165,7 +165,7 @@ async function send() {
   } else {
     try {
       const { data } = await axios.post(
-        "http://10.10.1.20:2020/api/messages/create/" + window.to_id,
+        "https://three-oy.onrender.com/api/messages/create/" + window.to_id,
         { message: text },
         {
           headers: { token: localStorage.getItem("accesToken") },
@@ -199,7 +199,7 @@ server.on("receive_msg", (data) => {
     content = `<p style="margin-top:5px;">${data.message}</p>`;
 
     if (data.file_name) {
-      const fileUrl = `http://10.10.1.20:2020/api/files/files/${data.file_name}`;
+      const fileUrl = `https://three-oy.onrender.com/api/files/files/${data.file_name}`;
       content =
         data.file_type.split("/")[0] == "image"
           ? `<img src="${fileUrl}" style="max-width:200px;">`
@@ -217,7 +217,7 @@ async function chat(id, name, avatar) {
   server.emit("join_room", id);
   try {
     const { data } = await axios.get(
-      "http://10.10.1.20:2020/api/messages/messages/" + id,
+      "https://three-oy.onrender.com/api/messages/messages/" + id,
       {
         headers: { token: localStorage.getItem("accesToken") },
       }
@@ -226,13 +226,13 @@ async function chat(id, name, avatar) {
     chatHeader.innerHTML = `<div class="chat-header">
   <img
               id="chatUserAvatar"
-              src="http://10.10.1.20:2020/api/files/files/${avatar}"
+              src="https://three-oy.onrender.com/api/files/files/${avatar}"
             />
             <span id="chatUserName">${name}</span>`;
 
     for (const element of data) {
       if (element.file_name != null) {
-        const fileUrl = `http://10.10.1.20:2020/api/files/files/${element.file_name}`;
+        const fileUrl = `https://three-oy.onrender.com/api/files/files/${element.file_name}`;
         let file;
         if (element.file_type == "image") {
           file = `<img src="${fileUrl}" style="max-width:200px;">`;

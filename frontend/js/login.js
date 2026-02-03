@@ -3,7 +3,7 @@ async function login(e) {
   try {
     const data={user_name:usernameInput.value,password:passwordInput.value}
     const newUser = await axios.post(
-      "http://10.10.1.20:2020/api/users/login",
+      "https://three-oy.onrender.com/api/users/login",
       data
     );
     if (newUser.data.status == 200) {
