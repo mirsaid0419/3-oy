@@ -15,7 +15,7 @@ import config from "../config/config.js";
 const transport = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "abduqulovMirsai0419@gmail.com",
+    user: "abduqulovmirsai0419@gmail.com",
     pass: "bogo zdlh ecfg wjtr",
   },
 });
