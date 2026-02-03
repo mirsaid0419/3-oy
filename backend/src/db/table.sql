@@ -21,5 +21,6 @@ CREATE Table "messages"(
     "to_id" INT REFERENCES users(id) NOT NULL,
     "from_id" INT REFERENCES users(id) NOT NULL,
     "file_name" VARCHAR(255) DEFAULT NULL,
-    "created_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    "created_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    "file_type" VARCHAR(50)
 );

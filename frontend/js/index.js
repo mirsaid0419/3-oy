@@ -192,7 +192,7 @@ async function send() {
 }
 
 server.on("receive_msg", (data) => {
-  // console.log(data);
+  console.log(data);
   // console.log(window.to_id)
   let content;
   if (data.from_id == window.to_id) {
@@ -234,7 +234,7 @@ async function chat(id, name, avatar) {
       if (element.file_name != null) {
         const fileUrl = `http://10.10.1.20:2020/api/files/files/${element.file_name}`;
         let file;
-        if (element.message == "image") {
+        if (element.file_type == "image") {
           file = `<img src="${fileUrl}" style="max-width:200px;">`;
         } else {
           file = `<video src="${fileUrl}" controls style="max-width:200px;"></video>`;

@@ -8,6 +8,7 @@ export default {
   DB_NAME: process.env.DB_NAME,
   DB_PASSWORD: process.env.DB_PASSWORD,
   PORT: Number(process.env.PORT),
+  DATABASE_URL:process.env.DATABASE_URL,
   ADMIN: {
     SUPERADMIN_USERNAME: String(process.env.SUPER_ADMIN_USER_NAME),
     SUPERADMIN_PASSWORD: String(process.env.SUPER_ADMIN_PASSWORD),

@@ -1,5 +1,4 @@
 import Joi from "joi";
-import { title } from "process";
 class UserValidate {
   constructor() {
     this.passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;

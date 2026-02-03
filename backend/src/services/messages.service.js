@@ -24,7 +24,8 @@ class Message {
       const { file_name } = req.body;
 
       if (file) {
-        if (file.mimetype.split("/")[0] == "image") {
+        const file_type=file.mimetype.split("/")[0]
+        if (file_type == "image") {
           await file.mv(
             join(process.cwd(), "src", "uploads", "pictures", file_name),
             (err) => {
@@ -33,11 +34,11 @@ class Message {
           );
 
           await pool.query(
-            `insert into messages(message,to_id,from_id,file_name) values($1,$2,$3,$4)`,
-            [message, to_id, id, file_name]
+            `insert into messages(message,to_id,from_id,file_name,file_type) values($1,$2,$3,$4,$5)`,
+            [message, to_id, id, file_name,file_type]
           );
           return { status: 201, message: "succes" };
-        } else if (file.mimetype.split("/")[0] == "video") {
+        } else if (file_type == "video") {
           await file.mv(
             `${join(process.cwd(), "src", "uploads", "videos", file_name)}`,
             (err) => {
@@ -46,8 +47,8 @@ class Message {
           );
 
           await pool.query(
-            `insert into messages(message,to_id,from_id,file_name) values($1,$2,$3,$4)`,
-            [message, to_id, id, file_name]
+            `insert into messages(message,to_id,from_id,file_name,file_type) values($1,$2,$3,$4,$5)`,
+            [message, to_id, id, file_name,file_type]
           );
           return { status: 201, message: "succes" };
         }
