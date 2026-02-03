@@ -3,6 +3,7 @@ import winston from "./logger.js";
 export default (err, req, res, next) => {
   if (!err.status || err.status >= 500) {
     winston.error(err);
+    console.log(err)
     return res.status(500).json({
       status: 500,
       message: "internal server error",
