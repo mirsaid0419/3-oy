@@ -11,9 +11,11 @@ import { createServer } from "http";
 import socket from "./routes/socket.routes.js";
 const app = express();
 const server = createServer(app);
+app.use(cors());
 const io = new Server(server, { cors: { origin: "*" } });
 
-app.use(cors());
+
+// Barcha HTTP so'rovlar uchun CORS-ni ochish
 app.use(express.json());
 app.use(fileUpload());
 app.use(cookieParser());

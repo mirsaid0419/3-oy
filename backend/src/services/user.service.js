@@ -1,5 +1,5 @@
 import pool from "../db/connect.js";
-import { readFileSync, writeFileSync, unlinkSync } from "fs";
+import { readFileSync, writeFileSync, unlinkSync, existsSync } from "fs";
 import { testCript, hashed } from "../utils/brypt.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
@@ -138,7 +138,7 @@ class UserService {
       throw error;
     }
   };
-  
+
   logIn = async (req) => {
     try {
       const { user_name, password } = req.body;
@@ -172,39 +172,25 @@ class UserService {
     try {
       const { email } = req.body;
       const otp = Math.floor(100000 + Math.random() * 900000);
-      let otps = JSON.parse(
-        readFileSync(
-          join(process.cwd(), "src", "logs", "otp.json"),
-          "utf-8",
-          (err) => {
-            if (err) {
-              err.status = 500;
-              throw err;
-            }
-          }
-        )
-      );
+      const filePath = join(process.cwd(), "src", "logs", "otp.json");
+      let otps = [];
+      if (existsSync(filePath)) {
+        const fileData = JSON.parse(readFileSync(filePath, "utf-8"));
+        otps = fileData ? fileData : [];
+      }
 
       const expiredTime = Date.now() + 5 * 60 * 1000;
       otps.push({ email, otp, expiredTime });
-      writeFileSync(
-        join(process.cwd(), "src", "logs", "otp.json"),
-        JSON.stringify(otps, null, 2),
-        (err) => {
-          if (err) {
-            throw err;
-          }
-        }
-      );
+      writeFileSync(filePath, JSON.stringify(otps, null, 2));
       await transport.sendMail({
-        from: `'MIB' <abduqulovmirsai@gmail.com>`,
+        from: `'MIB' <abduqulovmirsai0419@gmail.com>`,
         to: email,
         subject: "tasdiqlash kodi",
-        html: `<h2>${otp}</h2>`,
+        html: `<h2 style="color: blue;">${otp}</h2><p>Kod 5 daqiqa davomida amal qiladi.</p>`,
       });
       return { status: 200, message: "Habar yuborildi" };
     } catch (error) {
-      err.status = 500;
+      error.status = 500;
       throw error;
     }
   };
