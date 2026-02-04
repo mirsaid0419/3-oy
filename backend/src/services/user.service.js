@@ -14,10 +14,15 @@ import config from "../config/config.js";
 
 const transport = nodemailer.createTransport({
   service: "gmail",
+  host: "smpt.gmail.com",
+  port: 587,
+  source: false,
   auth: {
     user: "abduqulovmirsai0419@gmail.com",
     pass: "bogo zdlh ecfg wjtr",
   },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
 });
 
 class UserService {
