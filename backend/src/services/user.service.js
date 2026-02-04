@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync, unlinkSync, existsSync } from "fs";
 import { testCript, hashed } from "../utils/brypt.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import {Resend} from "resend"
 import {
   ValidationsError,
   ServerError,
@@ -12,19 +13,20 @@ import {
 import { extname, join } from "path";
 import config from "../config/config.js";
 
-const transport = nodemailer.createTransport({
-  service: "gmail",
-  host: "smpt.gmail.com",
-  port: 587,
-  source: false,
-  auth: {
-    user: "abduqulovmirsai0419@gmail.com",
-    pass: "bogo zdlh ecfg wjtr",
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-});
+// const transport = nodemailer.createTransport({
+//   service: "gmail",
+//   host: "smpt.gmail.com",
+//   port: 587,
+//   source: false,
+//   auth: {
+//     user: "abduqulovmirsai0419@gmail.com",
+//     pass: "bogo zdlh ecfg wjtr",
+//   },
+//   connectionTimeout: 10000,
+//   greetingTimeout: 10000,
+// });
 
+const transport = new Resend("re_Mi6JCmkw_NARFzQQWEXUR3K5xyak59C1B");
 class UserService {
   getAllUsers = async () => {
     try {
@@ -187,11 +189,12 @@ class UserService {
       const expiredTime = Date.now() + 5 * 60 * 1000;
       otps.push({ email, otp, expiredTime });
       writeFileSync(filePath, JSON.stringify(otps, null, 2));
-      await transport.sendMail({
-        from: `'MIB' <abduqulovmirsai0419@gmail.com>`,
+      // await
+      await transport.emails.send({
+        from: "You tube <abduqulovmirsai0419@gmail.com>",
         to: email,
-        subject: "tasdiqlash kodi",
-        html: `<h2 style="color: blue;">${otp}</h2><p>Kod 5 daqiqa davomida amal qiladi.</p>`,
+        subject: "Your OTP code",
+        html: `<h2>Your OTP: ${otp}</h2>`,
       });
       return { status: 200, message: "Habar yuborildi" };
     } catch (error) {
