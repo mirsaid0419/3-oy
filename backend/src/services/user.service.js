@@ -2,7 +2,6 @@ import pool from "../db/connect.js";
 import { readFileSync, writeFileSync, unlinkSync, existsSync } from "fs";
 import { testCript, hashed } from "../utils/brypt.js";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 import { Resend } from "resend";
 import {
   ValidationsError,
@@ -12,8 +11,6 @@ import {
 } from "../utils/errors.js";
 import { extname, join } from "path";
 import config from "../config/config.js";
-
-// const transport = new Resend("re_Mi6JCmkw_NARFzQQWEXUR3K5xyak59C1B");
 
 class UserService {
   getAllUsers = async () => {
@@ -165,44 +162,93 @@ class UserService {
 
   otp = async (req) => {
     try {
-      const transport = nodemailer.createTransport({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: config.EMAIL.USER, // Load from config
-          pass: config.EMAIL.PASS, // Load from config
-        },
-        connectionTimeout: 30000, // Increased timeout
-        greetingTimeout: 30000, // Increased timeout
-      });
-
       const { email } = req.body;
-      console.log(email);
+
+      // Resend API key tekshirish
+      if (!config.RESEND_API_KEY) {
+        throw new ServerError("Email service not configured. Please set RESEND_API_KEY in environment variables.");
+      }
+
+      // Resend client yaratish
+      const resend = new Resend(config.RESEND_API_KEY);
+
+      // 6 raqamli OTP yaratish
       const otp = Math.floor(100000 + Math.random() * 900000);
       const filePath = join(process.cwd(), "src", "logs", "otp.json");
+
       let otps = [];
       if (existsSync(filePath)) {
         const fileData = JSON.parse(readFileSync(filePath, "utf-8"));
         otps = fileData ? fileData : [];
       }
 
+      // Eskirgan OTP larni tozalash
       otps = otps.filter((el) => el.expiredTime > Date.now());
+
+      // Bir email uchun oxirgi OTP ni tekshirish (spam oldini olish)
+      const lastOtp = otps.find((el) => el.email === email.trim());
+      if (lastOtp && lastOtp.expiredTime > Date.now()) {
+        const remainingTime = Math.ceil((lastOtp.expiredTime - Date.now()) / 1000 / 60);
+        return {
+          status: 429,
+          message: `OTP allaqachon yuborilgan. ${remainingTime} daqiqadan keyin qayta urinib ko'ring.`
+        };
+      }
+
+      // Yangi OTP qo'shish (5 daqiqa amal qiladi)
       const expiredTime = Date.now() + 5 * 60 * 1000;
-      otps.push({ email, otp, expiredTime });
+      otps.push({ email: email.trim(), otp, expiredTime });
       writeFileSync(filePath, JSON.stringify(otps, null, 2));
 
-      const response = await transport.sendMail({
-        from: `YouTube <${config.EMAIL.USER}>`,
+      // Resend orqali email yuborish
+      const { data, error } = await resend.emails.send({
+        from: 'YouTube <onboarding@resend.dev>', // Resend test email
         to: email.trim(),
-        subject: "Your OTP code",
-        html: `<h2>Your OTP: ${otp}</h2>`,
+        subject: 'Your YouTube OTP Verification Code',
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <style>
+                body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+                .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                .header { text-align: center; color: #ff0000; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+                .otp-code { background: #f0f0f0; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; border-radius: 5px; margin: 20px 0; color: #333; }
+                .info { color: #666; font-size: 14px; line-height: 1.6; }
+                .warning { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin-top: 20px; font-size: 13px; color: #856404; }
+                .footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">🎬 YouTube Verification</div>
+                <p class="info">Salom!</p>
+                <p class="info">Sizning tasdiqlash kodingiz:</p>
+                <div class="otp-code">${otp}</div>
+                <p class="info">Bu kod <strong>5 daqiqa</strong> davomida amal qiladi.</p>
+                <div class="warning">
+                  <strong>⚠️ Xavfsizlik:</strong> Agar siz bu kodni so'ramagan bo'lsangiz, bu xabarni e'tiborsiz qoldiring.
+                </div>
+                <div class="footer">
+                  © 2026 YouTube Clone. Barcha huquqlar himoyalangan.
+                </div>
+              </div>
+            </body>
+          </html>
+        `,
       });
-      console.log(response);
-      return { status: 200, message: "Habar yuborildi" };
+
+      if (error) {
+        console.error("Resend error:", error);
+        throw new ServerError(`Email yuborishda xatolik: ${error.message}`);
+      }
+
+      console.log("Email yuborildi:", data);
+      return { status: 200, message: "OTP kod emailingizga yuborildi" };
+
     } catch (error) {
-      error.status = 500;
+      console.error("OTP error:", error);
+      error.status = error.status || 500;
       throw error;
     }
   };

@@ -23,7 +23,8 @@ export default {
   RESPONS_COOKIE_KEY: String(process.env.RESPONS_COOKIE_KEY),
   RESPONS_COOKIE_TIME: Number(process.env.RESPONS_COOKIE_TIME),
   EMAIL: {
-    USER: "abduqulovmirsai0419@gmail.com",
-    PASS: "bogo zdlh ecfg wjtr",
+    USER: process.env.EMAIL_USER || "abduqulovmirsai0419@gmail.com",
+    PASS: process.env.EMAIL_PASS || "bogo zdlh ecfg wjtr",
   },
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
 };
