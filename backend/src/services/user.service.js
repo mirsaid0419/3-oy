@@ -164,14 +164,6 @@ class UserService {
     try {
       const { email } = req.body;
 
-      // Resend API key tekshirish
-      if (!config.RESEND_API_KEY) {
-        throw new ServerError("Email service not configured. Please set RESEND_API_KEY in environment variables.");
-      }
-
-      // Resend client yaratish
-      const resend = new Resend(config.RESEND_API_KEY);
-
       // 6 raqamli OTP yaratish
       const otp = Math.floor(100000 + Math.random() * 900000);
       const filePath = join(process.cwd(), "src", "logs", "otp.json");
@@ -200,51 +192,80 @@ class UserService {
       otps.push({ email: email.trim(), otp, expiredTime });
       writeFileSync(filePath, JSON.stringify(otps, null, 2));
 
-      // Resend orqali email yuborish
-      const { data, error } = await resend.emails.send({
-        from: 'YouTube <onboarding@resend.dev>', // Resend test email
-        to: email.trim(),
-        subject: 'Your YouTube OTP Verification Code',
-        html: `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <style>
-                body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
-                .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-                .header { text-align: center; color: #ff0000; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
-                .otp-code { background: #f0f0f0; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; border-radius: 5px; margin: 20px 0; color: #333; }
-                .info { color: #666; font-size: 14px; line-height: 1.6; }
-                .warning { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin-top: 20px; font-size: 13px; color: #856404; }
-                .footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <div class="header">🎬 YouTube Verification</div>
-                <p class="info">Salom!</p>
-                <p class="info">Sizning tasdiqlash kodingiz:</p>
-                <div class="otp-code">${otp}</div>
-                <p class="info">Bu kod <strong>5 daqiqa</strong> davomida amal qiladi.</p>
-                <div class="warning">
-                  <strong>⚠️ Xavfsizlik:</strong> Agar siz bu kodni so'ramagan bo'lsangiz, bu xabarni e'tiborsiz qoldiring.
-                </div>
-                <div class="footer">
-                  © 2026 YouTube Clone. Barcha huquqlar himoyalangan.
-                </div>
+      // Email HTML template
+      const emailHtml = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <style>
+              body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+              .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+              .header { text-align: center; color: #ff0000; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+              .otp-code { background: #f0f0f0; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; border-radius: 5px; margin: 20px 0; color: #333; }
+              .info { color: #666; font-size: 14px; line-height: 1.6; }
+              .warning { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin-top: 20px; font-size: 13px; color: #856404; }
+              .footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">🎬 YouTube Verification</div>
+              <p class="info">Salom!</p>
+              <p class="info">Sizning tasdiqlash kodingiz:</p>
+              <div class="otp-code">${otp}</div>
+              <p class="info">Bu kod <strong>5 daqiqa</strong> davomida amal qiladi.</p>
+              <div class="warning">
+                <strong>⚠️ Xavfsizlik:</strong> Agar siz bu kodni so'ramagan bo'lsangiz, bu xabarni e'tiborsiz qoldiring.
               </div>
-            </body>
-          </html>
-        `,
-      });
+              <div class="footer">
+                © 2026 YouTube Clone. Barcha huquqlar himoyalangan.
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
 
-      if (error) {
-        console.error("Resend error:", error);
-        throw new ServerError(`Email yuborishda xatolik: ${error.message}`);
+      // Resend bilan email yuborish (agar API key mavjud bo'lsa)
+      if (config.RESEND_API_KEY) {
+        try {
+          console.log("📧 Resend orqali yuborilmoqda...");
+          const resend = new Resend(config.RESEND_API_KEY);
+
+          const { data, error } = await resend.emails.send({
+            from: 'YouTube <onboarding@resend.dev>',
+            to: email.trim(),
+            subject: 'Your YouTube OTP Verification Code',
+            html: emailHtml,
+          });
+
+          if (error) {
+            console.error("❌ Resend error:", error);
+            throw new ServerError(`Email yuborishda xatolik: ${error.message}`);
+          }
+
+          console.log("✅ Email yuborildi (Resend):", data);
+          return { status: 200, message: "OTP kod emailingizga yuborildi" };
+        } catch (emailError) {
+          console.error("❌ Email yuborishda xatolik:", emailError);
+          throw emailError;
+        }
       }
 
-      console.log("Email yuborildi:", data);
-      return { status: 200, message: "OTP kod emailingizga yuborildi" };
+      // Fallback: Agar Resend API key yo'q bo'lsa, console ga chiqarish
+      else {
+        console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        console.log("⚠️  RESEND_API_KEY topilmadi!");
+        console.log("📧 Email:", email.trim());
+        console.log("🔐 OTP Code:", otp);
+        console.log("⏰ Expires:", new Date(expiredTime).toLocaleString());
+        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+
+        return {
+          status: 200,
+          message: "OTP yaratildi (console ga qarang). Production uchun RESEND_API_KEY sozlang!",
+          dev_otp: process.env.NODE_ENV === 'development' ? otp : undefined
+        };
+      }
 
     } catch (error) {
       console.error("OTP error:", error);
