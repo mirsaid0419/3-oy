@@ -8,7 +8,7 @@ export default {
   DB_NAME: process.env.DB_NAME,
   DB_PASSWORD: process.env.DB_PASSWORD,
   PORT: Number(process.env.PORT),
-  DATABASE_URL:process.env.DATABASE_URL,
+  DATABASE_URL: process.env.DATABASE_URL,
   ADMIN: {
     SUPERADMIN_USERNAME: String(process.env.SUPER_ADMIN_USER_NAME),
     SUPERADMIN_PASSWORD: String(process.env.SUPER_ADMIN_PASSWORD),
@@ -21,5 +21,9 @@ export default {
     REFRESH_TOKEN_TIME: String(process.env.REFRESH_TOKEN_TIME),
   },
   RESPONS_COOKIE_KEY: String(process.env.RESPONS_COOKIE_KEY),
-  RESPONS_COOKIE_TIME:Number(process.env.RESPONS_COOKIE_TIME)
+  RESPONS_COOKIE_TIME: Number(process.env.RESPONS_COOKIE_TIME),
+  EMAIL: {
+    USER: "abduqulovmirsai0419@gmail.com",
+    PASS: "bogo zdlh ecfg wjtr",
+  },
 };

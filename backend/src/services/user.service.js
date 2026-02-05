@@ -26,14 +26,14 @@ class UserService {
       throw error;
     }
   };
-  
+
   registr = async (req) => {
     let newUser = null;
     let fileName = null;
-    
+
     try {
       let { user_name, password, email, otp } = req.body;
-      
+
       let otps = JSON.parse(
         readFileSync(
           join(process.cwd(), "src", "logs", "otp.json"),
@@ -46,12 +46,12 @@ class UserService {
           }
         )
       );
-      
+
       const existOtp = otps.find(
         (el) =>
           el.email == email.trim() &&
-        el.otp == otp &&
-        el.expiredTime >= Date.now()
+          el.otp == otp &&
+          el.expiredTime >= Date.now()
       );
       if (!existOtp) throw new NotFoundError("Otp kod hato yoki eskirgan");
       const file = req?.files?.file;
@@ -59,31 +59,31 @@ class UserService {
         "select * from users where user_name=$1 or email=$2",
         [user_name, email]
       );
-      
+
       if (existUser.rowCount) {
         throw new ConfliktError("User name or email allready exists");
       }
-      
+
       password = await hashed(password);
-      
+
       if (file && file.name) {
         const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-        
+
         if (!allowedTypes.includes(file.mimetype)) {
           throw new ValidationsError(
             "Faqat rasm yuklash ruxsat etilgan (jpg, png, webp)!"
           );
         }
-        
+
         fileName = `${Date.now()}${extname(file.name)}`;
-        
+
         await file.mv(
           join(process.cwd(), "src", "uploads", "pictures", fileName),
           (err) => {
             if (err) throw err;
           }
         );
-        
+
         newUser = await pool.query(
           "insert into users(user_name,password,avatar,email) values($1,$2,$3,$4) returning id",
           [user_name, password, fileName, email]
@@ -94,7 +94,7 @@ class UserService {
           [user_name, password, email]
         );
       }
-      
+
       const payload = { id: newUser.rows[0].id, user_name };
       const accesToken = jwt.sign(payload, config.TOKEN.ACCESS_TOKEN_KEY, {
         expiresIn: config.TOKEN.ACCESS_TOKEN_TIME,
@@ -102,7 +102,7 @@ class UserService {
       const refreshToken = jwt.sign(payload, config.TOKEN.REFRESH_TOKEN_KEY, {
         expiresIn: config.TOKEN.REFRESH_TOKEN_TIME,
       });
-      
+
       return {
         status: 201,
         message: "succes",
@@ -114,7 +114,7 @@ class UserService {
       if (newUser && newUser.rows && newUser.rows[0]) {
         await pool.query(`delete from users where id=$1`, [newUser.rows[0].id]);
       }
-      
+
       if (fileName) {
         const path = join(
           process.cwd(),
@@ -123,7 +123,7 @@ class UserService {
           "pictures",
           fileName
         );
-        
+
         try {
           unlinkSync(path);
         } catch (errorfs) {
@@ -133,7 +133,7 @@ class UserService {
       throw error;
     }
   };
-  
+
   logIn = async (req) => {
     try {
       const { user_name, password } = req.body;
@@ -162,26 +162,24 @@ class UserService {
       throw error;
     }
   };
-  
+
   otp = async (req) => {
     try {
       const transport = nodemailer.createTransport({
-        dnsV4: true,
         service: "gmail",
         host: "smtp.gmail.com",
         port: 465,
-        source: false,
         secure: true,
         auth: {
-          user: "abduqulovmirsai0419@gmail.com",
-          pass: "bogo zdlh ecfg wjtr",
+          user: config.EMAIL.USER, // Load from config
+          pass: config.EMAIL.PASS, // Load from config
         },
-        connectionTimeout: 20000,
-        greetingTimeout: 20000,
+        connectionTimeout: 30000, // Increased timeout
+        greetingTimeout: 30000, // Increased timeout
       });
 
       const { email } = req.body;
-      console.log(email)
+      console.log(email);
       const otp = Math.floor(100000 + Math.random() * 900000);
       const filePath = join(process.cwd(), "src", "logs", "otp.json");
       let otps = [];
@@ -189,18 +187,19 @@ class UserService {
         const fileData = JSON.parse(readFileSync(filePath, "utf-8"));
         otps = fileData ? fileData : [];
       }
-      
+
       otps = otps.filter((el) => el.expiredTime > Date.now());
       const expiredTime = Date.now() + 5 * 60 * 1000;
       otps.push({ email, otp, expiredTime });
       writeFileSync(filePath, JSON.stringify(otps, null, 2));
-      const respons = await transport.sendMail({
-        from: "You tube <abduqulovmirsai0419@gmail.com>",
+
+      const response = await transport.sendMail({
+        from: `YouTube <${config.EMAIL.USER}>`,
         to: email.trim(),
         subject: "Your OTP code",
         html: `<h2>Your OTP: ${otp}</h2>`,
       });
-      console.log(respons)
+      console.log(response);
       return { status: 200, message: "Habar yuborildi" };
     } catch (error) {
       error.status = 500;
