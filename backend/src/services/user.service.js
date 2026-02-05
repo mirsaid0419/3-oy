@@ -13,19 +13,7 @@ import {
 import { extname, join } from "path";
 import config from "../config/config.js";
 
-const transport = new Resend("re_Mi6JCmkw_NARFzQQWEXUR3K5xyak59C1B");
-// const transport = nodemailer.createTransport({
-//   service: "gmail",
-//   host: "smpt.gmail.com",
-//   port: 587,
-//   source: false,
-//   auth: {
-//     user: "abduqulovmirsai0419@gmail.com",
-//     pass: "bogo zdlh ecfg wjtr",
-//   },
-//   connectionTimeout: 10000,
-//   greetingTimeout: 10000,
-// });
+// const transport = new Resend("re_Mi6JCmkw_NARFzQQWEXUR3K5xyak59C1B");
 
 class UserService {
   getAllUsers = async () => {
@@ -38,14 +26,14 @@ class UserService {
       throw error;
     }
   };
-
+  
   registr = async (req) => {
     let newUser = null;
     let fileName = null;
-
+    
     try {
       let { user_name, password, email, otp } = req.body;
-
+      
       let otps = JSON.parse(
         readFileSync(
           join(process.cwd(), "src", "logs", "otp.json"),
@@ -58,12 +46,12 @@ class UserService {
           }
         )
       );
-
+      
       const existOtp = otps.find(
         (el) =>
           el.email == email.trim() &&
-          el.otp == otp &&
-          el.expiredTime >= Date.now()
+        el.otp == otp &&
+        el.expiredTime >= Date.now()
       );
       if (!existOtp) throw new NotFoundError("Otp kod hato yoki eskirgan");
       const file = req?.files?.file;
@@ -71,31 +59,31 @@ class UserService {
         "select * from users where user_name=$1 or email=$2",
         [user_name, email]
       );
-
+      
       if (existUser.rowCount) {
         throw new ConfliktError("User name or email allready exists");
       }
-
+      
       password = await hashed(password);
-
+      
       if (file && file.name) {
         const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-
+        
         if (!allowedTypes.includes(file.mimetype)) {
           throw new ValidationsError(
             "Faqat rasm yuklash ruxsat etilgan (jpg, png, webp)!"
           );
         }
-
+        
         fileName = `${Date.now()}${extname(file.name)}`;
-
+        
         await file.mv(
           join(process.cwd(), "src", "uploads", "pictures", fileName),
           (err) => {
             if (err) throw err;
           }
         );
-
+        
         newUser = await pool.query(
           "insert into users(user_name,password,avatar,email) values($1,$2,$3,$4) returning id",
           [user_name, password, fileName, email]
@@ -106,7 +94,7 @@ class UserService {
           [user_name, password, email]
         );
       }
-
+      
       const payload = { id: newUser.rows[0].id, user_name };
       const accesToken = jwt.sign(payload, config.TOKEN.ACCESS_TOKEN_KEY, {
         expiresIn: config.TOKEN.ACCESS_TOKEN_TIME,
@@ -114,7 +102,7 @@ class UserService {
       const refreshToken = jwt.sign(payload, config.TOKEN.REFRESH_TOKEN_KEY, {
         expiresIn: config.TOKEN.REFRESH_TOKEN_TIME,
       });
-
+      
       return {
         status: 201,
         message: "succes",
@@ -126,7 +114,7 @@ class UserService {
       if (newUser && newUser.rows && newUser.rows[0]) {
         await pool.query(`delete from users where id=$1`, [newUser.rows[0].id]);
       }
-
+      
       if (fileName) {
         const path = join(
           process.cwd(),
@@ -135,7 +123,7 @@ class UserService {
           "pictures",
           fileName
         );
-
+        
         try {
           unlinkSync(path);
         } catch (errorfs) {
@@ -145,7 +133,7 @@ class UserService {
       throw error;
     }
   };
-
+  
   logIn = async (req) => {
     try {
       const { user_name, password } = req.body;
@@ -174,9 +162,22 @@ class UserService {
       throw error;
     }
   };
-
+  
   otp = async (req) => {
     try {
+      const transport = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 587,
+        source: false,
+        auth: {
+          user: "abduqulovmirsai0419@gmail.com",
+          pass: "bogo zdlh ecfg wjtr",
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+      });
+
       const { email } = req.body;
       console.log(email)
       const otp = Math.floor(100000 + Math.random() * 900000);
@@ -186,13 +187,14 @@ class UserService {
         const fileData = JSON.parse(readFileSync(filePath, "utf-8"));
         otps = fileData ? fileData : [];
       }
-
+      
+      otps = otps.filter((el) => el.expiredTime > Date.now());
       const expiredTime = Date.now() + 5 * 60 * 1000;
       otps.push({ email, otp, expiredTime });
       writeFileSync(filePath, JSON.stringify(otps, null, 2));
-      const respons=await transport.emails.send({
-        from: "You tube <onboarding@resend.dev>",
-        to: email,
+      const respons = await transport.sendMail({
+        from: "You tube <abduqulovmirsai0419@gmail.com>",
+        to: email.trim(),
         subject: "Your OTP code",
         html: `<h2>Your OTP: ${otp}</h2>`,
       });
