@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync, unlinkSync, existsSync } from "fs";
 import { testCript, hashed } from "../utils/brypt.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import {Resend} from "resend"
+import { Resend } from "resend";
 import {
   ValidationsError,
   ServerError,
@@ -13,6 +13,7 @@ import {
 import { extname, join } from "path";
 import config from "../config/config.js";
 
+const transport = new Resend("re_Mi6JCmkw_NARFzQQWEXUR3K5xyak59C1B");
 // const transport = nodemailer.createTransport({
 //   service: "gmail",
 //   host: "smpt.gmail.com",
@@ -26,7 +27,6 @@ import config from "../config/config.js";
 //   greetingTimeout: 10000,
 // });
 
-const transport = new Resend("re_Mi6JCmkw_NARFzQQWEXUR3K5xyak59C1B");
 class UserService {
   getAllUsers = async () => {
     try {
@@ -178,6 +178,7 @@ class UserService {
   otp = async (req) => {
     try {
       const { email } = req.body;
+      console.log(email)
       const otp = Math.floor(100000 + Math.random() * 900000);
       const filePath = join(process.cwd(), "src", "logs", "otp.json");
       let otps = [];
@@ -189,13 +190,13 @@ class UserService {
       const expiredTime = Date.now() + 5 * 60 * 1000;
       otps.push({ email, otp, expiredTime });
       writeFileSync(filePath, JSON.stringify(otps, null, 2));
-      // await
-      await transport.emails.send({
-        from: "You tube <abduqulovmirsai0419@gmail.com>",
+      const respons=await transport.emails.send({
+        from: "You tube <onboarding@resend.dev>",
         to: email,
         subject: "Your OTP code",
         html: `<h2>Your OTP: ${otp}</h2>`,
       });
+      console.log(respons)
       return { status: 200, message: "Habar yuborildi" };
     } catch (error) {
       error.status = 500;
