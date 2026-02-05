@@ -166,16 +166,18 @@ class UserService {
   otp = async (req) => {
     try {
       const transport = nodemailer.createTransport({
+        dnsV4: true,
         service: "gmail",
         host: "smtp.gmail.com",
-        port: 587,
+        port: 465,
         source: false,
+        secure: true,
         auth: {
           user: "abduqulovmirsai0419@gmail.com",
           pass: "bogo zdlh ecfg wjtr",
         },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
+        connectionTimeout: 20000,
+        greetingTimeout: 20000,
       });
 
       const { email } = req.body;
