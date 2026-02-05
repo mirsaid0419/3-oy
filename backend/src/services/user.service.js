@@ -231,9 +231,17 @@ class UserService {
           console.log("📧 Resend orqali yuborilmoqda...");
           const resend = new Resend(config.RESEND_API_KEY);
 
+          // Resend test mode: faqat verified email ga yuborish mumkin
+          // Test rejimda har qanday email uchun ham o'z emailimizga yuboramiz
+          const testEmail = config.EMAIL.USER || "abduqulovmirsai0419@gmail.com";
+          const isTestMode = !config.RESEND_API_KEY.startsWith('re_live_');
+          const recipientEmail = isTestMode ? testEmail : email.trim();
+
+          console.log(`📨 Recipient: ${recipientEmail} ${isTestMode ? '(TEST MODE)' : ''}`);
+
           const { data, error } = await resend.emails.send({
             from: 'YouTube <onboarding@resend.dev>',
-            to: email.trim(),
+            to: recipientEmail,
             subject: 'Your YouTube OTP Verification Code',
             html: emailHtml,
           });
@@ -244,6 +252,18 @@ class UserService {
           }
 
           console.log("✅ Email yuborildi (Resend):", data);
+
+          // Test mode da OTP ni response da qaytaramiz (development uchun)
+          if (isTestMode) {
+            return {
+              status: 200,
+              message: `OTP kod ${recipientEmail} ga yuborildi (TEST MODE)`,
+              test_mode: true,
+              otp_code: otp, // Test rejimda OTP ni ko'rsatamiz
+              note: "Production uchun domen verify qiling: resend.com/domains"
+            };
+          }
+
           return { status: 200, message: "OTP kod emailingizga yuborildi" };
         } catch (emailError) {
           console.error("❌ Email yuborishda xatolik:", emailError);
