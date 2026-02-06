@@ -23,8 +23,13 @@ export default {
   RESPONS_COOKIE_KEY: String(process.env.RESPONS_COOKIE_KEY),
   RESPONS_COOKIE_TIME: Number(process.env.RESPONS_COOKIE_TIME),
   EMAIL: {
+    SERVICE: process.env.EMAIL_SERVICE || "gmail", // gmail, outlook, yahoo, custom
     USER: process.env.EMAIL_USER || "abduqulovmirsai0419@gmail.com",
     PASS: process.env.EMAIL_PASS || "bogo zdlh ecfg wjtr",
+    HOST: process.env.EMAIL_HOST, // Custom SMTP host (agar service='custom' bo'lsa)
+    PORT: process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT) : 587,
+    SECURE: process.env.EMAIL_SECURE === 'true', // true for 465, false for 587
+    FROM_NAME: process.env.EMAIL_FROM_NAME || "YouTube Clone",
   },
   RESEND_API_KEY: process.env.RESEND_API_KEY,
 };
